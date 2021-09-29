@@ -1,0 +1,61 @@
+html.body{
+    height: 100%;
+    margin: 0;
+}
+
+
+section{
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.img-logo{
+    width: 48px;
+    height: 48px;
+}
+
+.flex-auto{
+    flex-basis: auto;
+}
+
+.w-30{
+    width: 30%;
+}
+
+.height{
+    height: 30%;
+}
+
+.object-fill{
+    object-fit: fill;
+}
+
+.bg-cover{
+    background-size: cover;
+}
+
+.brightness-75{
+    filter: brightness(.75);
+}
+
+.min-hv-100{
+    min-height: 100vh;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.whitespace-nowrap{
+    white-space: nowrap;
+}
+
+.text-ellipsis{
+    text-overflow: ellipsis;
+}
+
+.mb-100{
+    margin-bottom: auto;
+}

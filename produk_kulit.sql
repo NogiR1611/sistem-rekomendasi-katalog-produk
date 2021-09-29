@@ -1,0 +1,1 @@
+create table produk_kulit (pkid int(50) primary key auto_increment,namapk varchar(50),kategori varchar(50),foto varchar(100),harga varchar(25))

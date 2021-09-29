@@ -1,0 +1,1 @@
+create table user (userid int(50) primary key auto_increment, nama varchar(50), password varchar(255), hak_akses varchar(25))
