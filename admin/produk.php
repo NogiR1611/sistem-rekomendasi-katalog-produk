@@ -2,6 +2,11 @@
     include 'config/config.php';
 
     session_start();
+
+    if($_SESSION['hak_akses'] !== 'admin'){
+        header("location: login.php");
+    }
+
     if (!isset($_SESSION['nama'])){
         header("Location: login.php");
     }
@@ -179,6 +184,9 @@
                             href="index.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
                                 class="hide-menu">Dashboard</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="kategori.php" aria-expanded="false"><i
+                                class="mdi mdi-group"></i><span class="hide-menu">Kategori</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="pengguna.php" aria-expanded="false"><i
                                     class="mdi mdi-account"></i><span class="hide-menu">Pengguna</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -276,7 +284,6 @@
                                                 <th scope="col">Nama Produk</th>
                                                 <th scope="col">Harga</th>
                                                 <th scope="col">Foto</th>
-                                                <th scope="col">Kategori</th>
                                                 <th scope="col">Rating</th>
                                                 <th scope="col text-center">Aksi</th>
                                             </tr>
@@ -292,7 +299,6 @@
                                                         <td>'.$row['namapk'].'</td>
                                                         <td>'.rupiah($row['harga']).'</td>
                                                         <td>'.$row['foto'].'</td>
-                                                        <td>'.$row['kategori'].'</td>
                                                         <td>4.3</td>
                                                         <td class="row justify-content-center">
                                                             <a href="produk/edit.php?id='.$row['pkid'].'"
@@ -307,6 +313,7 @@
                                                         </td>
                                                     </tr>
                                                     ';
+
                                                     $index++;
                                                 }
                                             ?>

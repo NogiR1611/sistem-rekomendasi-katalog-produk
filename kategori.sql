@@ -1,0 +1,1 @@
+create table kategori (kategori_id int(50) primary key auto_increment, nama_kategori varchar(50))

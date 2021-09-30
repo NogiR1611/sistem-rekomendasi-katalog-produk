@@ -4,42 +4,42 @@
     session_start();
 
     if($_SESSION['hak_akses'] !== 'admin'){
-        header("location: ../login.php");
+        header("location: login.php");
     }
 
     if (!isset($_SESSION['nama'])){
-        header("Location: ../login.php");
+        header("Location: login.php");
     }
     
+    $alert = "";
+    
     if(isset($_POST['tambah'])){
-        $nama_produk = $_POST['nama-produk'];
-        $harga = $_POST['harga'];
-        $kategori = $_POST['kategori'];
+        $nama_kategori = filtered_input($_POST['nama_kategori']);
 
-        //proses pengolahan foto 
-        $nama_foto = $_FILES['foto']['name'];
-        $x = explode('.',$nama_foto);
-        $file_tmp = $_FILES['foto']['tmp_name'];
+        // //proses pengolahan foto 
+        // $nama_foto = $_FILES['foto']['name'];
+        // $x = explode('.',$nama_foto);
+        // $file_tmp = $_FILES['foto']['tmp_name'];
         
-        move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
+        // move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
 
         //membuat query
-        $sql = "INSERT INTO produk_kulit(namapk, kategori, foto, harga) VALUES (:namapk,:kategori,:foto,:harga)";
+        $sql = "INSERT INTO kategori(nama_kategori) VALUES (:nama)";
         $stmt = $db->prepare($sql);
 
         //ikat parameter ke query
         $params = array(
-            ":namapk" => $nama_produk,
-            ":kategori" => $kategori,
-            ":foto" => $nama_foto,
-            ":harga" => $harga,
+            ":nama" => $nama_kategori,
         );
 
         //eksekusi query untuk menyimpan ke database
         $saved = $stmt->execute($params);
 
-        //jika query berhasil menyimpan data maka user dialihkan menuju halaman produk
-        header("location: ../produk.php");
+        $alert = '
+            <div class="alert alert-success" role="alert">
+                Data berhasil di tambahkan
+            </div>    
+        ';
     }
 
     function filtered_input($data) {
@@ -219,12 +219,12 @@
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <h4 class="page-title">Tabel Produk</h4>
+                        <h4 class="page-title">Tabel Kategori</h4>
                         <div class="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Produk</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Kategori</li>
                                     <li class="breadcrumb-item active" aria-current="page">Tambah</li>
                                 </ol>
                             </nav>
@@ -244,38 +244,18 @@
                     <div class="col-lg-8 col-xlg-9 col-md-7">
                         <div class="card">
                             <div class="card-body">
+                                <?php echo $alert; ?>
                                 <form class="form-horizontal form-material mx-2" method="POST" enctype="multipart/form-data">
                                     <div class="form-group">
-                                        <label class="col-md-12">Nama Produk</label>
+                                        <label class="col-md-12">Nama Kategori</label>
                                         <div class="col-md-12">
                                             <input type="text"
-                                                class="form-control form-control-line" name="nama-produk">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-12">Harga</label>
-                                        <div class="col-md-12">
-                                            <input type="number"
-                                                class="form-control form-control-line" name="harga">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-12">Foto</label>
-                                        <div class="col-md-12">
-                                            <input type="file"
-                                                class="form-control form-control-line" name="foto">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-12">Kategori</label>
-                                        <div class="col-md-12">
-                                            <input type="text"
-                                                class="form-control form-control-line" name="kategori">
+                                                class="form-control form-control-line" name="nama_kategori">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                            <button class="btn btn-success text-white" type="submit" name="tambah">Tambah Produk</button>
+                                            <button class="btn btn-success text-white" type="submit" name="tambah">Tambah Kategori</button>
                                         </div>
                                     </div>
                                 </form>

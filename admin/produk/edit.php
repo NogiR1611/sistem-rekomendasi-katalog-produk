@@ -2,8 +2,12 @@
     include '../config/config.php';
 
     session_start();
+    if($_SESSION['hak_akses'] !== 'admin'){
+        header("location: ../login.php");
+    }
+    
     if (!isset($_SESSION['nama'])){
-        header("Location: login.php");
+        header("Location: ../login.php");
     }
     
     $alert = "";
@@ -15,7 +19,8 @@
         die("Error. No ID selected");
     }
 
-    $edit_produk = "SELECT * FROM produk_kulit WHERE pkid = :id";
+    //ambil data produk
+    $edit_produk = "SELECT produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id where produk_kulit.pkid=:id";
 
     $sql = $db->prepare($edit_produk);
 
@@ -24,6 +29,13 @@
     $sql->execute();
 
     $result = $sql->fetch(PDO::FETCH_ASSOC);
+
+    //ambil data produk
+    $ambil_kategori = "SELECT * from kategori";
+
+    $sql2 = $db->prepare($ambil_kategori);
+
+    $sql2->execute();
 
     if(isset($_POST['edit'])){
         $alert = "";
@@ -207,6 +219,9 @@
                             href="../index.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
                                 class="hide-menu">Dashboard</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="../kategori.php" aria-expanded="false"><i
+                                class="mdi mdi-group"></i><span class="hide-menu">Kategori</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="../pengguna.php" aria-expanded="false"><i
                                     class="mdi mdi-account"></i><span class="hide-menu">Pengguna</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -270,7 +285,7 @@
                                         <label class="col-md-12">Nama Produk</label>
                                         <div class="col-md-12">
                                             <input type="text" name="nama_produk"
-                                                class="form-control form-control-line" value=<?php echo $result['namapk']; ?>'>
+                                                class="form-control form-control-line" value="<?php echo $result['namapk']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -284,14 +299,26 @@
                                         <label class="col-md-12">Foto</label>
                                         <div class="col-md-12">
                                             <input type="file" name="foto"
-                                                class="form-control form-control-line">
+                                                class="form-control form-control-line" value=<?php echo $result['foto']; ?>>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Kategori</label>
                                         <div class="col-md-12">
-                                            <input type="text" name="kategori"
-                                                class="form-control form-control-line" value=<?php echo $result['kategori']; ?>>
+                                            <select class="form-control" value="<?php echo $result['nama_kategori']; ?>">
+                                                <option value="none" selected disabled hidden>
+                                                    Silahkan pilih di bawah ini
+                                                </option>
+                                                <?php
+                                                    while($result2 = $sql2->fetch(PDO::FETCH_ASSOC)){
+                                                ?>
+                                                    <option class="form-control" value="<? echo $result2['nama_kategori'] ?>" <?php if($result['nama_kategori'] === $result2['nama_kategori']) echo 'selected="selected"'; ?>>
+                                                        <?php echo $result2['nama_kategori'];?>
+                                                    </option>
+                                                <?php
+                                                    }
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">

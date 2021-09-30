@@ -14,7 +14,7 @@
     }
 
     //Untuk mengambil data jumlah pengguna
-    $ambil_jumlah_pengguna = "SELECT COUNT(*) FROM user";
+    $ambil_jumlah_pengguna = "SELECT COUNT(*) FROM user WHERE hak_akses='pengguna'";
     
     $query1 = $db->prepare($ambil_jumlah_pengguna);
     
@@ -24,27 +24,38 @@
 
     $jumlah_pengguna = $hasil_jumlah_pengguna["COUNT(*)"];
 
-    //Untuk mengambil data jumlah produk
-    $ambil_jumlah_produk = "SELECT COUNT(*) FROM produk_kulit";
+    //Untuk mengambil data jumlah admin
+    $ambil_jumlah_admin = "SELECT COUNT(*) FROM user WHERE hak_akses='admin'";
     
-    $query2 = $db->prepare($ambil_jumlah_produk);
+    $query2 = $db->prepare($ambil_jumlah_admin);
     
     $query2->execute();
 
-    $hasil_jumlah_produk = $query2->fetch(PDO::FETCH_ASSOC);
+    $hasil_jumlah_admin = $query2->fetch(PDO::FETCH_ASSOC);
+
+    $jumlah_admin = $hasil_jumlah_admin["COUNT(*)"];
+
+    //Untuk mengambil data jumlah produk
+    $ambil_jumlah_produk = "SELECT COUNT(*) FROM produk_kulit";
+    
+    $query3 = $db->prepare($ambil_jumlah_produk);
+    
+    $query3->execute();
+
+    $hasil_jumlah_produk = $query3->fetch(PDO::FETCH_ASSOC);
 
     $jumlah_produk = $hasil_jumlah_produk["COUNT(*)"];
 
     //Untuk mengambil data jumlah kategori
-    $ambil_jumlah_kategori = "SELECT COUNT(DISTINCT(kategori)) FROM produk_kulit";
+    $ambil_jumlah_kategori = "SELECT COUNT(*) FROM kategori";
 
-    $query3 = $db->prepare($ambil_jumlah_kategori);
+    $query4 = $db->prepare($ambil_jumlah_kategori);
     
-    $query3->execute();
+    $query4->execute();
 
-    $hasil_jumlah_kategori = $query3->fetch(PDO::FETCH_ASSOC);
+    $hasil_jumlah_kategori = $query4->fetch(PDO::FETCH_ASSOC);
 
-    $jumlah_kategori = $hasil_jumlah_kategori["COUNT(DISTINCT(kategori))"];
+    $jumlah_kategori = $hasil_jumlah_kategori["COUNT(*)"];
 ?>
 
 <!DOCTYPE html>
@@ -192,6 +203,9 @@
                                 href="pengguna.php" aria-expanded="false"><i
                                     class="mdi mdi-account"></i><span class="hide-menu">Pengguna</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="kategori.php" aria-expanded="false"><i
+                                    class="mdi mdi-group"></i><span class="hide-menu">Kategori</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="produk.php" aria-expanded="false"><i class="mdi mdi-package"></i><span
                                     class="hide-menu">Produk</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -255,7 +269,7 @@
                         <div class="card bg-primary">
                             <div class="card-body">
                                 <h4 class="text-white">Jumlah Admin</h4>
-                                <span class="text-white">1 Orang</span>
+                                <span class="text-white"><?php echo $jumlah_admin; ?></span>
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,6 @@
     include '../config/config.php';
 
     session_start();
-
     if($_SESSION['hak_akses'] !== 'admin'){
         header("location: ../login.php");
     }
@@ -11,35 +10,58 @@
         header("Location: ../login.php");
     }
     
-    if(isset($_POST['tambah'])){
-        $nama_produk = $_POST['nama-produk'];
-        $harga = $_POST['harga'];
-        $kategori = $_POST['kategori'];
+    $alert = "";
+    
+    if(isset($_GET['id'])){
+        $id_kategori = $_GET['id'];
+    }
+    else{
+        die("Error. No ID selected");
+    }
 
-        //proses pengolahan foto 
-        $nama_foto = $_FILES['foto']['name'];
-        $x = explode('.',$nama_foto);
-        $file_tmp = $_FILES['foto']['tmp_name'];
+    $edit_kategori = "SELECT * FROM kategori WHERE kategori_id = :id";
+
+    $sql = $db->prepare($edit_kategori);
+
+    $sql->bindParam(':id',$id_kategori, PDO::PARAM_INT);
+
+    $sql->execute();
+
+    $result = $sql->fetch(PDO::FETCH_ASSOC);
+
+    if(isset($_POST['edit'])){
+        $alert = "";
+        $nama_kategori = filtered_input($_POST['nama_kategori']);
+        // $nama_foto = $_FILES['foto']['name'];
+
+        // //proses pengolahan foto
+        // $x = explode('.',$nama_foto);
+        // $file_tmp = $_FILES['foto']['tmp_name'];
+
+        // move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
         
-        move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
+        try{
+            //membuat query
+            $sql = "UPDATE kategori SET nama_kategori= :nama WHERE kategori_id= :id";
 
-        //membuat query
-        $sql = "INSERT INTO produk_kulit(namapk, kategori, foto, harga) VALUES (:namapk,:kategori,:foto,:harga)";
-        $stmt = $db->prepare($sql);
+            $stmt = $db->prepare($sql);
 
-        //ikat parameter ke query
-        $params = array(
-            ":namapk" => $nama_produk,
-            ":kategori" => $kategori,
-            ":foto" => $nama_foto,
-            ":harga" => $harga,
-        );
+            $data = array(
+                ':id' => $id_kategori,
+                ':nama' => $nama_kategori
+            );
 
-        //eksekusi query untuk menyimpan ke database
-        $saved = $stmt->execute($params);
+            $stmt->execute($data);
 
-        //jika query berhasil menyimpan data maka user dialihkan menuju halaman produk
-        header("location: ../produk.php");
+            $alert = '
+                <div class="alert alert-success" role="alert">
+                    Data berhasil di update
+                </div>    
+            ';
+        }
+        catch(PDOException $e){
+            echo $e->getMessage();
+        }
     }
 
     function filtered_input($data) {
@@ -62,13 +84,13 @@
     <meta name="description"
         content="Xtreme Admin Lite is powerful and clean admin dashboard template, inpired from Bootstrap Framework">
     <meta name="robots" content="noindex,nofollow">
-    <title>Dashboard Admin | INTANA LEATHER COLLECTION</title>
+    <title>Dashboard Admin INTANA LEATHER COLLECTION</title>
     <link rel="canonical" href="https://www.wrappixel.com/templates/xtreme-admin-lite/" />
     <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="./../assets/images/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon.png">
     <!-- Custom CSS -->
-    <link href="./../dist/css/style.min.css" rel="stylesheet">
-    <link href="./../dist/css/style.css" type="text/css" rel="stylesheet">
+    <link href="../dist/css/style.min.css" rel="stylesheet">
+    <link href="../dist/css/style.css" type="text/css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -106,7 +128,7 @@
                         <b class="logo-icon">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
-                            <img src="./../assets/images/logo.png" alt="homepage" class="logo-navbar" />
+                            <img src="../assets/images/logo.png" alt="homepage" class="logo-navbar" />
                             INTANA LEATHER COLLECTION
                         </b>
                     </a>
@@ -135,7 +157,7 @@
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="./../assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31">
+                                <img src="../assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31">
                             </a>
                         </li>
                         <!-- ============================================================== -->
@@ -161,11 +183,11 @@
                         <li>
                             <!-- User Profile-->
                             <div class="user-profile d-flex no-block dropdown m-t-20">
-                                <div class="user-pic"><img src="./../assets/images/users/1.jpg" alt="users" class="rounded-circle" width="40" /></div>
+                                <div class="user-pic"><img src="../assets/images/users/1.jpg" alt="users" class="rounded-circle" width="40" /></div>
                                     <div class="user-content hide-menu m-l-10 d-flex align-items-center">
                                         <a href="#" class="" id="Userdd" role="button"
                                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <h5 class="m-b-0 user-name font-medium"><?php echo $_SESSION['nama']; ?><i class="fa fa-angle-down"></i></h5>
+                                            <h5 class="m-b-0 user-name font-medium"><?php echo $_SESSION['nama']; ?> <i class="fa fa-angle-down"></i></h5>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="Userdd">
                                             <div class="dropdown-divider"></div>
@@ -219,13 +241,13 @@
             <div class="page-breadcrumb">
                 <div class="row align-items-center">
                     <div class="col-5">
-                        <h4 class="page-title">Tabel Produk</h4>
+                        <h4 class="page-title">Tabel Kategori</h4>
                         <div class="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Produk</li>
-                                    <li class="breadcrumb-item active" aria-current="page">Tambah</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Kategori</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
                                 </ol>
                             </nav>
                         </div>
@@ -244,38 +266,18 @@
                     <div class="col-lg-8 col-xlg-9 col-md-7">
                         <div class="card">
                             <div class="card-body">
+                                <?php echo $alert; ?>
                                 <form class="form-horizontal form-material mx-2" method="POST" enctype="multipart/form-data">
                                     <div class="form-group">
-                                        <label class="col-md-12">Nama Produk</label>
+                                        <label class="col-md-12">Nama Kategori</label>
                                         <div class="col-md-12">
-                                            <input type="text"
-                                                class="form-control form-control-line" name="nama-produk">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-12">Harga</label>
-                                        <div class="col-md-12">
-                                            <input type="number"
-                                                class="form-control form-control-line" name="harga">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-12">Foto</label>
-                                        <div class="col-md-12">
-                                            <input type="file"
-                                                class="form-control form-control-line" name="foto">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-12">Kategori</label>
-                                        <div class="col-md-12">
-                                            <input type="text"
-                                                class="form-control form-control-line" name="kategori">
+                                            <input type="text" name="nama_kategori"
+                                                class="form-control form-control-line" value="<?php echo $result['nama_kategori']; ?>">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-12">
-                                            <button class="btn btn-success text-white" type="submit" name="tambah">Tambah Produk</button>
+                                            <button class="btn btn-success text-white" name="edit">Edit Kategori</button>
                                         </div>
                                     </div>
                                 </form>
@@ -318,15 +320,15 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    <script src="./../assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
-    <script src="./../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./../dist/js/app-style-switcher.js"></script>
+    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../dist/js/app-style-switcher.js"></script>
     <!--Wave Effects -->
-    <script src="./../dist/js/waves.js"></script>
+    <script src="../dist/js/waves.js"></script>
     <!--Menu sidebar -->
-    <script src="./../dist/js/sidebarmenu.js"></script>
+    <script src="../dist/js/sidebarmenu.js"></script>
     <!--Custom JavaScript -->
-    <script src="./../dist/js/custom.js"></script>
+    <script src="../dist/js/custom.js"></script>
 </body>
 </html>

@@ -3,6 +3,14 @@
 
     session_start();
 
+    if($_SESSION['hak_akses'] !== 'admin'){
+        header("location: login.php");
+    }
+
+    if (!isset($_SESSION['nama'])){
+        header("location: login.php");
+    }
+    
     $alert = ''; 
 
     if(isset($_POST['ganti'])){
@@ -210,6 +218,9 @@
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                             href="index.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
                                 class="hide-menu">Dashboard</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="kategori.php" aria-expanded="false"><i
+                                class="mdi mdi-group"></i><span class="hide-menu">Kategori</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="pengguna.php" aria-expanded="false"><i
                                     class="mdi mdi-account"></i><span class="hide-menu">Pengguna</span></a></li>

@@ -1,3 +1,24 @@
+<?php
+    include 'config/config.php';
+
+    session_start();
+
+    if($_SESSION['hak_akses'] !== 'admin'){
+        header("location: login.php");
+    }
+
+    if (!isset($_SESSION['nama'])){
+        header("Location: login.php");
+    }
+
+    $alert = '';
+
+    $ambil_data_rating = "SELECT user.nama as nama_pengguna, produk_kulit.namapk as produk, rating.ratingvalue as rating_value from rating inner join produk_kulit on rating.pkid=produk_kulit.pkid inner join user on rating.userid=user.userid";
+
+    $sql = $db->prepare($ambil_data_rating);
+
+    $sql->execute();
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 
@@ -134,6 +155,9 @@
                             href="index.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
                                 class="hide-menu">Dashboard</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                            href="kategori.php" aria-expanded="false"><i
+                                class="mdi mdi-group"></i><span class="hide-menu">Kategori</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="pengguna.php" aria-expanded="false"><i
                                     class="mdi mdi-account"></i><span class="hide-menu">Pengguna</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
@@ -204,12 +228,22 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Mark</td>
-                                                <td>Otto</td>
-                                                <td>@mdo</td>
-                                            </tr>
+                                            <?php
+                                                $index = 1;
+
+                                                while($row = $sql->fetch(PDO::FETCH_ASSOC)){
+                                                    echo '
+                                                        <tr>
+                                                            <th scope="row">'.$index.'</th>
+                                                            <td>'.$row['nama_pengguna'].'</td>
+                                                            <td>'.$row['produk'].'</td>
+                                                            <td>'.$row['rating_value'].'</td>
+                                                        </tr>
+                                                    ';
+
+                                                    $index++;
+                                                }
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>
