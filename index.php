@@ -12,12 +12,11 @@
         header("location: login.php");
     }
 
-    $ambil_data_kategori = "SELECT foto,kategori FROM produk_kulit GROUP BY kategori";
+    $ambil_data_kategori = "SELECT produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id group by kategori.nama_kategori";
 
     $sql = $db->prepare($ambil_data_kategori);
 
     $sql->execute();
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -37,9 +36,9 @@
                         INTANA LEATHER COLLECTION
                     </a>
                     <div class="d-flex collapse navbar-collapse me-4" id="navbarSupportedContent">
-                        <form class="d-flex flex-fill">
-                            <input class="flex-auto form-control me-2" type="search" placeholder="Cari produk disini" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Cari</button>
+                        <form class="d-flex flex-fill" method="POST">
+                            <input class="flex-auto form-control me-2" name="pencarian" type="search" placeholder="Cari produk disini" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit" name="cari">Cari</button>
                         </form>
                     </div>
                     <ul class="navbar-nav mb-2 mb-lg-0">
@@ -62,9 +61,9 @@
                         echo '
                             <div class="col-sm-4">
                                 <div class="mx-1 my-1 position-relative cursor-pointer" style="background-color: rgba(0,0,0,0.5); aspect-ratio: 1/1;">
-                                    <a href="kategori.php?kategori='.$hasil['kategori'].'">
+                                    <a href="kategori.php?kategori='.$hasil['nama_kategori'].'">
                                         <img src="admin/assets/images/produk/'.$hasil['foto'].'" class="w-100 h-100 position-relative object-fill brightness-75" alt="" />
-                                        <p class="position-absolute top-50 start-50 translate-middle fs-1 text-light text-break fw-bold">'.$hasil['kategori'].'</p>
+                                        <p class="position-absolute top-50 start-50 translate-middle fs-1 text-light text-break fw-bold">'.$hasil['nama_kategori'].'</p>
                                     </a>    
                                 </div>
                             </div>

@@ -10,11 +10,17 @@
     if (!isset($_SESSION['nama'])){
         header("Location: ../login.php");
     }
+
+    $ambil_kategori = "SELECT * FROM kategori";
+
+    $query = $db->prepare($ambil_kategori);
+
+    $query->execute();
     
     if(isset($_POST['tambah'])){
-        $nama_produk = $_POST['nama-produk'];
-        $harga = $_POST['harga'];
-        $kategori = $_POST['kategori'];
+        $nama_produk = filtered_input($_POST['nama-produk']);
+        $harga = filtered_input($_POST['harga']);
+        $kategori = filtered_input($_POST['kategori']);
 
         //proses pengolahan foto 
         $nama_foto = $_FILES['foto']['name'];
@@ -24,13 +30,13 @@
         move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
 
         //membuat query
-        $sql = "INSERT INTO produk_kulit(namapk, kategori, foto, harga) VALUES (:namapk,:kategori,:foto,:harga)";
+        $sql = "INSERT INTO produk_kulit(kategori_id, namapk, foto, harga) VALUES (:kategori_id,:namapk,:foto,:harga)";
         $stmt = $db->prepare($sql);
 
         //ikat parameter ke query
         $params = array(
+            ":kategori_id" => $kategori,
             ":namapk" => $nama_produk,
-            ":kategori" => $kategori,
             ":foto" => $nama_foto,
             ":harga" => $harga,
         );
@@ -269,8 +275,20 @@
                                     <div class="form-group">
                                         <label class="col-md-12">Kategori</label>
                                         <div class="col-md-12">
-                                            <input type="text"
-                                                class="form-control form-control-line" name="kategori">
+                                            <select class="form-control" name="kategori">
+                                                <option value="none" selected disabled hidden>
+                                                    Silahkan pilih di bawah ini
+                                                </option>
+                                                <?php
+                                                    while($data_kategori = $query->fetch(PDO::FETCH_ASSOC)){
+                                                        echo '
+                                                            <option class="form-control" value="'.$data_kategori['kategori_id'].'" name="kategori">
+                                                                '.$data_kategori['nama_kategori'].'
+                                                            </option>
+                                                        ';
+                                                    }
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="form-group">

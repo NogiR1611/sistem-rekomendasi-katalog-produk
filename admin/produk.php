@@ -13,7 +13,7 @@
 
     $alert = '';
 
-    $ambil_data_produk = "SELECT * FROM produk_kulit";
+    $ambil_data_produk = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id";
 
     $sql = $db->prepare($ambil_data_produk);
 
@@ -284,6 +284,7 @@
                                                 <th scope="col">Nama Produk</th>
                                                 <th scope="col">Harga</th>
                                                 <th scope="col">Foto</th>
+                                                <th scope="col">Kategori</th>
                                                 <th scope="col">Rating</th>
                                                 <th scope="col text-center">Aksi</th>
                                             </tr>
@@ -299,6 +300,7 @@
                                                         <td>'.$row['namapk'].'</td>
                                                         <td>'.rupiah($row['harga']).'</td>
                                                         <td>'.$row['foto'].'</td>
+                                                        <td>'.$row['nama_kategori'].'</td>
                                                         <td>4.3</td>
                                                         <td class="row justify-content-center">
                                                             <a href="produk/edit.php?id='.$row['pkid'].'"

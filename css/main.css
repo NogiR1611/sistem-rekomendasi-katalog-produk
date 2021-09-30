@@ -3,7 +3,6 @@ html.body{
     margin: 0;
 }
 
-
 section{
     display: flex;
     min-height: 100vh;
@@ -58,4 +57,9 @@ section{
 
 .mb-100{
     margin-bottom: auto;
+}
+
+.image-produk{
+    max-height: 480px;
+    max-width: 480px;
 }

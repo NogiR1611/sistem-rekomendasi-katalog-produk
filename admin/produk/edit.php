@@ -30,6 +30,19 @@
 
     $result = $sql->fetch(PDO::FETCH_ASSOC);
 
+    //jika kategori tak diisi
+    if(!$result){
+        $edit_produk = "SELECT * from produk_kulit where pkid=:id";
+
+        $sql = $db->prepare($edit_produk);
+
+        $sql->bindParam(':id',$id_produk, PDO::PARAM_INT);
+
+        $sql->execute();
+
+        $result = $sql->fetch(PDO::FETCH_ASSOC);
+    }
+
     //ambil data produk
     $ambil_kategori = "SELECT * from kategori";
 
@@ -52,13 +65,13 @@
         
         try{
             //membuat query
-            $sql = "UPDATE produk_kulit SET namapk= :namapk, kategori= :kategori, foto=:foto, harga=:harga WHERE pkid=:pkid";
+            $sql = "UPDATE produk_kulit SET kategori_id=:kategori, namapk= :namapk, foto=:foto, harga=:harga WHERE pkid=:pkid";
 
             $stmt = $db->prepare($sql);
 
             $data = array(
-                ':namapk' => $nama_produk,
                 ':kategori' => $kategori,
+                ':namapk' => $nama_produk,
                 ':foto' => $nama_foto,
                 ':harga' => $harga,
                 ':pkid' => $id_produk
@@ -305,17 +318,17 @@
                                     <div class="form-group">
                                         <label class="col-md-12">Kategori</label>
                                         <div class="col-md-12">
-                                            <select class="form-control" value="<?php echo $result['nama_kategori']; ?>">
+                                            <select class="form-control" name="kategori">
                                                 <option value="none" selected disabled hidden>
                                                     Silahkan pilih di bawah ini
                                                 </option>
                                                 <?php
                                                     while($result2 = $sql2->fetch(PDO::FETCH_ASSOC)){
-                                                ?>
-                                                    <option class="form-control" value="<? echo $result2['nama_kategori'] ?>" <?php if($result['nama_kategori'] === $result2['nama_kategori']) echo 'selected="selected"'; ?>>
-                                                        <?php echo $result2['nama_kategori'];?>
-                                                    </option>
-                                                <?php
+                                                        echo '
+                                                            <option class="form-control" value="'.$result2['kategori_id'].'" '.($result['nama_kategori'] === $result2['nama_kategori'] ? 'selected="selected"' : '').' name="kategori">
+                                                                '.$result2['nama_kategori'].'
+                                                            </option>
+                                                        ';
                                                     }
                                                 ?>
                                             </select>

@@ -3,7 +3,12 @@
     include '../config/config.php';
 
     session_start();
-    if (!isset($_SESSION['nama']) && $_SESSION['hak_akses'] == 'pengguna'){
+    
+    if($_SESSION['hak_akses'] !== 'pengguna'){
+        header("location: login.php");
+    }
+
+    if (!isset($_SESSION['nama'])){
         header("Location: login.php");
     }
 
@@ -16,15 +21,28 @@
 
     $alert = "";
 
+    //ambil data produk
     $ambil_data_produk = "SELECT * FROM produk_kulit WHERE pkid=:id";
 
-    $sql = $db->prepare($ambil_data_produk);
+    //$ambil_data_produk = "SELECT user.nama as nama_pengguna, produk_kulit.namapk as produk, rating.ratingvalue as rating_value from rating inner join produk_kulit on rating.pkid=produk_kulit.pkid inner join user on rating.userid=user.userid where user.nama = :nama and produk_kulit.pkid=:produk_id";
+    $data_produk = $db->prepare($ambil_data_produk);
 
-    $sql->bindParam(':id',$pkid);
+    $data_produk->bindParam(':id',$pkid);
 
-    $sql->execute();
+    $data_produk->execute();
 
-    $hasil = $sql->fetch(PDO::FETCH_ASSOC);
+    $hasil = $data_produk->fetch(PDO::FETCH_ASSOC);
+
+    //ambil data rating
+    $ambil_rating = "SELECT * FROM rating WHERE pkid=:id";
+
+    $data_rating = $db->prepare($ambil_rating);
+    
+    $data_rating->bindParam(':id',$pkid);
+
+    $data_rating->execute();
+
+    $rating = $data_rating->fetch(PDO::FETCH_ASSOC);
 
     if(isset($_POST['tambah'])){
         
@@ -109,13 +127,13 @@
                 </div>
             </nav>
             <div className="d-flex justify-content-center p-3 min-vh-100 w-100">
-                <div class="w-50 mx-auto">
+                <div class="d-flex flex-column justify-content-center w-50 mx-auto">
                     <?php echo $alert; ?>
-                    <img src="../admin/assets/images/produk/<?php echo $hasil['foto']; ?>" class="ratio ratio-1x1 mt-5" />
+                    <img src="../admin/assets/images/produk/<?php echo $hasil['foto']; ?>" class="ratio ratio-1x1 mt-5 image-produk mx-auto" />
                     <div class="my-3">
                         <p class="text-dark fs-3 fw-bold text-center"><?php echo $hasil['namapk']; ?></p>
                         <p class="text-dark fs-6 mb-3 fw-bold">Harga  : <?php echo rupiah($hasil['harga']); ?></p>
-                        <p class="text-dark fs-6 mb-3 fw-bold">Rating : 4.3/5.0 <i class="fa fa-star yellow-star"></i></p>
+                        <p class="text-dark fs-6 mb-3 fw-bold">Rating : <?php echo ''.($rating ? $rating["ratingvalue"] : '0').''; ?>/5<i class="fa fa-star yellow-star"></i></p>
                         <div class="flex justify-content-center w-100">
                         <button type="button" class="btn btn-primary d-block mx-auto" data-toggle="modal" data-target="#exampleModal">
                             Tambah Rating
@@ -132,7 +150,7 @@
                                         </button>
                                     </div>
                                     <form method="POST">
-                                        <div cladal-body d-flex ss="mojustify-content-center">
+                                        <div class="d-flex justify-content-center my-2">
                                             <div class="star-icon">
                                                     <input type="radio" name="rating" value="1" id="rating1">
                                                     <label for="rating1" class="fa fa-star"></label>

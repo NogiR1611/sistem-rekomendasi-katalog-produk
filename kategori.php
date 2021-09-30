@@ -3,7 +3,12 @@
     include 'config/config.php';
 
     session_start();
-    if (!isset($_SESSION['nama']) && $_SESSION['hak_akses'] == 'pengguna'){
+    
+    if($_SESSION['hak_akses'] !== 'pengguna'){
+        header("location: login.php");
+    }
+
+    if (!isset($_SESSION['nama'])){
         header("Location: login.php");
     }
 
@@ -14,7 +19,7 @@
         die("sorry. No kategori selected");
     }
 
-    $ambil_data_kategori = "SELECT * FROM produk_kulit WHERE kategori=:kategori";
+    $ambil_data_kategori = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id where kategori.nama_kategori = :kategori";
     
     $sql = $db->prepare($ambil_data_kategori);
 
