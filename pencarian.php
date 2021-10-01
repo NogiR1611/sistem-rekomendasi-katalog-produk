@@ -1,5 +1,4 @@
 <?php
-
     include 'config/config.php';
 
     session_start();
@@ -9,23 +8,30 @@
     }
 
     if (!isset($_SESSION['nama'])){
-        header("Location: login.php");
+        header("location: login.php");
     }
 
-    if(isset($_GET['kategori'])){
-        $kategori = $_GET['kategori'];
+    if(isset($_GET['hasil'])){
+        $cari = "%".filtered_input($_GET['hasil'])."%";
+
+        $ambil_data_pencarian = "SELECT * from produk_kulit where namapk like :cari";
+    
+        $pencarian = $db->prepare($ambil_data_pencarian);
+
+        $pencarian->bindParam(":cari",$cari);
+
+        $pencarian->execute();
     }
     else{
-        die("sorry. No kategori selected");
+        echo 'sorry';
     }
 
-    $ambil_data_kategori = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id where kategori.nama_kategori = :kategori";
-    
-    $sql = $db->prepare($ambil_data_kategori);
-
-    $sql->bindParam(':kategori',$kategori);
-
-    $sql->execute();
+    function filtered_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
 
     function rupiah($rupiah){
         $hasil_rupiah = "Rp " . number_format($rupiah,2,',','.');
@@ -71,10 +77,19 @@
                 </div>
             </nav>
             <div className="mt-3">
-                <p class="text-dark fs-1 fw-bold text-center">Kategori : <?php echo $kategori; ?></p>
+                <p class="text-dark fs-1 fw-bold text-center">Hasil pencarian : <?php echo $_GET['hasil']; ?></p>
                 <div class="row justify-content-start min-vh-100 w-100 mx-auto">
                         <?php
-                            while($hasil = $sql->fetch(PDO::FETCH_ASSOC)){
+                            
+                            if(!$hasil = $pencarian->fetch(PDO::FETCH_ASSOC)){
+                                echo '
+                                    <div class="d-flex justify-content-center mt-5 pt-5">
+                                        <p class="fs-3">Maaf pencarian anda tidak ada ;(</p>
+                                    </div>
+                                ';
+                            }
+
+                            while($hasil = $pencarian->fetch(PDO::FETCH_ASSOC)){
                                 echo '
                                     <div class="col-md-4">
                                         <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">

@@ -26,13 +26,15 @@
 
     if (isset($_GET['delete'])){
 
-        $hapus_data_produk = "DELETE FROM produk_kulit WHERE pkid = '" . $_GET["delete"] ."'";
+        $pkid = $_GET['delete'];
 
-        //$hapus_data_produk = "DELETE FROM produk_kulit WHERE pkid = :pkid";
+        $hapus_data_produk = "DELETE FROM produk_kulit WHERE pkid = :pkid";
         
         $stmt = $db->prepare($hapus_data_produk);
         
-        $stmt->execute([$_GET["delete"]]);
+        $stmt->bindParam(':pkid',$pkid);
+
+        $stmt->execute();
 
         // $row = var_dump($stmt->fetch(PDO::FETCH_ASSOC));
 
@@ -224,36 +226,6 @@
                                     <li class="breadcrumb-item active" aria-current="page">Produk</li>
                                 </ol>
                             </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Silahkan berikan rating untuk produk ini</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body d-flex justify-content-center">
-                            <div class="star-icon">
-                                <input type="radio" name="rating1" id="rating1">
-                                <label for="rating1" class="fa fa-star"></label>
-                                <input type="radio" name="rating1" id="rating2">
-                                <label for="rating2" class="fa fa-star"></label>
-                                <input type="radio" name="rating1" id="rating3">
-                                <label for="rating3" class="fa fa-star"></label>
-                                <input type="radio" name="rating1" id="rating4">
-                                <label for="rating4" class="fa fa-star"></label>
-                                <input type="radio" name="rating1" id="rating5">
-                                <label for="rating5" class="fa fa-star"></label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Kembali</button>
-                            <button type="button" class="btn btn-primary">Tambah</button>
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,13 @@
         header("location: login.php");
     }
 
+    //Untuk mengambil produk dengan nilai rating tertinggi
+    $ambil_rating_produk = "SELECT produk_kulit.*, avg(rating.ratingvalue)'rating_tot',count(user.nama) as jumlah_pemberi_rating from rating inner join produk_kulit on rating.pkid=produk_kulit.pkid inner join user on rating.userid=user.userid group by produk_kulit.pkid order by rating.ratingvalue desc";
+
+    $query = $db->prepare($ambil_rating_produk);
+
+    $query->execute();
+    
     //Untuk mengambil data jumlah pengguna
     $ambil_jumlah_pengguna = "SELECT COUNT(*) FROM user WHERE hak_akses='pengguna'";
     
@@ -200,11 +207,11 @@
                                 href="index.php" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span
                                     class="hide-menu">Dashboard</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                                href="pengguna.php" aria-expanded="false"><i
-                                    class="mdi mdi-account"></i><span class="hide-menu">Pengguna</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="kategori.php" aria-expanded="false"><i
                                     class="mdi mdi-group"></i><span class="hide-menu">Kategori</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="pengguna.php" aria-expanded="false"><i
+                                    class="mdi mdi-account"></i><span class="hide-menu">Pengguna</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
                                 href="produk.php" aria-expanded="false"><i class="mdi mdi-package"></i><span
                                     class="hide-menu">Produk</span></a></li>
@@ -321,42 +328,22 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Sampel Jaket 1</td>
-                                            <td>4.7</td>
-                                            <td>2</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Sampel Sepatu 1</td>
-                                            <td>4.3</td>
-                                            <td>4</td>
-                                        </tr>  
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Sampel Sepatu 1</td>
-                                            <td>4.3</td>
-                                            <td>2</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Sampel Sepatu 2</td>
-                                            <td>4.1</td>
-                                            <td>2</td>
-                                        </tr>   
-                                        <tr>
-                                            <td>5</td>
-                                            <td>Sampel Dompet 1</td>
-                                            <td>3.5</td>
-                                            <td>3</td>
-                                        </tr>   
-                                        <tr>
-                                            <td>6</td>
-                                            <td>Sampel Dompet 2</td>
-                                            <td>3.3</td>
-                                            <td>7</td>
-                                        </tr>
+                                        <?php
+                                            $index = 1;
+
+                                            while($rating_produk = $query->fetch(PDO::FETCH_ASSOC)){
+                                                echo '   
+                                                    <tr>
+                                                        <td>'.$index.'</td>
+                                                        <td>'.$rating_produk['namapk'].'</td>
+                                                        <td>'.$rating_produk['rating_tot'].'</td>
+                                                        <td>'.$rating_produk['jumlah_pemberi_rating'].'</td>
+                                                    </tr>
+                                                ';
+
+                                                $index++;
+                                            }
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>

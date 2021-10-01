@@ -272,7 +272,7 @@
                                         <label class="col-md-12">Nama Kategori</label>
                                         <div class="col-md-12">
                                             <input type="text" name="nama_kategori"
-                                                class="form-control form-control-line" value="<?php echo $result['nama_kategori']; ?>">
+                                                class="form-control form-control-line" value="<?php echo $result['nama_kategori']; ?>" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">

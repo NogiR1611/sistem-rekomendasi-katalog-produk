@@ -23,8 +23,7 @@
 
     //ambil data produk
     $ambil_data_produk = "SELECT * FROM produk_kulit WHERE pkid=:id";
-
-    //$ambil_data_produk = "SELECT user.nama as nama_pengguna, produk_kulit.namapk as produk, rating.ratingvalue as rating_value from rating inner join produk_kulit on rating.pkid=produk_kulit.pkid inner join user on rating.userid=user.userid where user.nama = :nama and produk_kulit.pkid=:produk_id";
+    
     $data_produk = $db->prepare($ambil_data_produk);
 
     $data_produk->bindParam(':id',$pkid);
@@ -33,8 +32,20 @@
 
     $hasil = $data_produk->fetch(PDO::FETCH_ASSOC);
 
-    //ambil data rating
-    $ambil_rating = "SELECT * FROM rating WHERE pkid=:id";
+    //ambil data rating untuk user pada produk yang sudah diberi rating
+    $ambil_rating_user = "SELECT user.userid as pengguna_id, user.nama as pengguna, produk_kulit.namapk as produk, rating.ratingvalue as rating from rating inner join user on rating.userid=user.userid inner join produk_kulit on rating.pkid=produk_kulit.pkid where produk_kulit.pkid=:produk_id and user.nama=:nama_user";
+
+    $rating_user = $db->prepare($ambil_rating_user);
+
+    $rating_user->bindParam('produk_id',$pkid);
+    $rating_user->bindParam('nama_user',$_SESSION['nama']);
+
+    $rating_user->execute();
+
+    $hasil_rating_user = $rating_user->fetch(PDO::FETCH_ASSOC);
+
+    //ambil data rating untuk produk
+    $ambil_rating = "SELECT AVG(rating.ratingvalue)'rating_avg' FROM rating WHERE pkid=:id";
 
     $data_rating = $db->prepare($ambil_rating);
     
@@ -45,7 +56,7 @@
     $rating = $data_rating->fetch(PDO::FETCH_ASSOC);
 
     if(isset($_POST['tambah'])){
-        
+
         $baca_id_pengguna = "SELECT userid FROM user WHERE nama=:nama";
 
         $query1 = $db->prepare($baca_id_pengguna);
@@ -58,25 +69,44 @@
 
         $userid = $hasil1["userid"];
 
-        $tambah_rating = "INSERT INTO rating (pkid, userid, ratingvalue) VALUES (:pkid, :userid, :ratingvalue)"; 
-        
-        $query2 = $db->prepare($tambah_rating);
+        if($hasil_rating_user){
+            $edit_rating_produk = "UPDATE rating set ratingvalue=:rating where pkid=:produk_id and userid=:pengguna_id";
+            
+            $proses_edit_rating = $db->prepare($edit_rating_produk);
 
-        $params = array(
-            ":pkid" => $pkid,
-            ":userid" =>$userid,
-            ":ratingvalue" => $_POST["rating"]
-        );
+            $proses_edit_rating->bindParam(':rating', $_POST['rating']);
+            $proses_edit_rating->bindParam(':produk_id',$pkid);
+            $proses_edit_rating->bindParam(':pengguna_id',$userid);
+            
+            $proses_edit_rating->execute();
 
-        $query2->execute($params);
+            $alert = '
+                <div class="alert alert-success" role="alert">
+                    Rating berhasil diganti
+                </div>  
+            ';
+        }
+        else{
+            $tambah_rating = "INSERT INTO rating (pkid, userid, ratingvalue) VALUES (:pkid, :userid, :ratingvalue)"; 
+            
+            $query2 = $db->prepare($tambah_rating);
 
-        $rating = $query2->fetch(PDO::FETCH_ASSOC);
-        
-        $alert = '
-            <div class="alert alert-success" role="alert">
-                Rating berhasil ditambahkan
-            </div>  
-        ';
+            $params = array(
+                ":pkid" => $pkid,
+                ":userid" =>$userid,
+                ":ratingvalue" => $_POST["rating"]
+            );
+
+            $query2->execute($params);
+
+            $query2->fetch(PDO::FETCH_ASSOC);
+            
+            $alert = '
+                <div class="alert alert-success" role="alert">
+                    Rating berhasil ditambahkan
+                </div>  
+            ';
+        }
     }
 
 
@@ -107,8 +137,8 @@
                         INTANA LEATHER COLLECTION
                     </a>
                     <div class="d-flex collapse navbar-collapse me-4" id="navbarSupportedContent">
-                        <form class="d-flex flex-fill">
-                            <input class="flex-auto form-control me-2" type="search" placeholder="Cari produk disini" aria-label="Search">
+                        <form class="d-flex flex-fill" method="GET" action="../pencarian.php">
+                            <input class="flex-auto form-control me-2" name="hasil" type="search" placeholder="Cari produk disini" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Cari</button>
                         </form>
                     </div>
@@ -133,7 +163,7 @@
                     <div class="my-3">
                         <p class="text-dark fs-3 fw-bold text-center"><?php echo $hasil['namapk']; ?></p>
                         <p class="text-dark fs-6 mb-3 fw-bold">Harga  : <?php echo rupiah($hasil['harga']); ?></p>
-                        <p class="text-dark fs-6 mb-3 fw-bold">Rating : <?php echo ''.($rating ? $rating["ratingvalue"] : '0').''; ?>/5<i class="fa fa-star yellow-star"></i></p>
+                        <p class="text-dark fs-6 mb-3 fw-bold">Rating : <?php echo ''.($rating ? number_format((float)$rating["rating_avg"],1,'.','') : '0').''; ?>/5.0<i class="fa fa-star yellow-star"></i></p>
                         <div class="flex justify-content-center w-100">
                         <button type="button" class="btn btn-primary d-block mx-auto" data-toggle="modal" data-target="#exampleModal">
                             Tambah Rating
@@ -146,21 +176,30 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Silahkan berikan rating untuk produk ini</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
+                                            <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
+                                    <?php
+                                        if($hasil_rating_user && $hasil_rating_user['rating']){
+                                            echo '
+                                                <div class="d-flex justify-content-center mx-2 text-center">
+                                                    <p class="fw-bold">Anda sebelumnya sudah memberi rating pada produk ini. Ingin merubahnya lagi?</p>
+                                                </div>
+                                            ';
+                                        }
+                                    ?>
                                     <form method="POST">
                                         <div class="d-flex justify-content-center my-2">
                                             <div class="star-icon">
-                                                    <input type="radio" name="rating" value="1" id="rating1">
+                                                    <input type="radio" name="rating" value="1" id="rating1" <?php echo ''.($hasil_rating_user && $hasil_rating_user['rating'] === '1' ? 'checked' : '').''; ?>>
                                                     <label for="rating1" class="fa fa-star"></label>
-                                                    <input type="radio" name="rating" value="2" id="rating2">
+                                                    <input type="radio" name="rating" value="2" id="rating2" <?php echo ''.($hasil_rating_user && $hasil_rating_user['rating'] === '2' ? 'checked' : '').''; ?>>
                                                     <label for="rating2" class="fa fa-star"></label>
-                                                    <input type="radio" name="rating" value="3" id="rating3">
+                                                    <input type="radio" name="rating" value="3" id="rating3" <?php echo ''.($hasil_rating_user && $hasil_rating_user['rating'] === '3' ? 'checked' : '').''; ?>>
                                                     <label for="rating3" class="fa fa-star"></label>
-                                                    <input type="radio" name="rating" value="4" id="rating4">
+                                                    <input type="radio" name="rating" value="4" id="rating4" <?php echo ''.($hasil_rating_user && $hasil_rating_user['rating'] === '4' ? 'checked' : '').''; ?>>
                                                     <label for="rating4" class="fa fa-star"></label>
-                                                    <input type="radio" name="rating" value="5" id="rating5">
+                                                    <input type="radio" name="rating" value="5" id="rating5" <?php echo ''.($hasil_rating_user && $hasil_rating_user['rating'] === '5' ? 'checked' : '').''; ?>>
                                                     <label for="rating5" class="fa fa-star"></label>
                                             </div>
                                         </div>

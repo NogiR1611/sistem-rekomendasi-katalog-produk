@@ -97,8 +97,8 @@
                         INTANA LEATHER COLLECTION
                     </a>
                     <div class="d-flex collapse navbar-collapse me-4" id="navbarSupportedContent">
-                        <form class="d-flex flex-fill">
-                            <input class="flex-auto form-control me-2" type="search" placeholder="Cari produk disini" aria-label="Search">
+                        <form class="d-flex flex-fill" method="GET" action="pencarian.php">
+                            <input class="flex-auto form-control me-2" name="hasil" type="search" placeholder="Cari produk disini" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Cari</button>
                         </form>
                     </div>

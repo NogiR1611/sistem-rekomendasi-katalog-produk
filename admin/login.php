@@ -5,7 +5,7 @@
 
     if (isset($_POST['login'])){
         $userTest = filtered_input($_POST['username']);
-        $passTest = filtered_input($_POST['password']);
+        $passTest = filtered_input($_POST['password']); 
 
         // sebelum parameter dikirim ke server dilakukan validasi terlebih dahulu
         if(strlen($userTest) < 8){

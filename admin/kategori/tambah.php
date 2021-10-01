@@ -250,7 +250,7 @@
                                         <label class="col-md-12">Nama Kategori</label>
                                         <div class="col-md-12">
                                             <input type="text"
-                                                class="form-control form-control-line" name="nama_kategori">
+                                                class="form-control form-control-line" name="nama_kategori" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">

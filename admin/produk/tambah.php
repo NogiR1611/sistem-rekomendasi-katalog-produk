@@ -255,36 +255,36 @@
                                         <label class="col-md-12">Nama Produk</label>
                                         <div class="col-md-12">
                                             <input type="text"
-                                                class="form-control form-control-line" name="nama-produk">
+                                                class="form-control form-control-line" name="nama-produk" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Harga</label>
                                         <div class="col-md-12">
                                             <input type="number"
-                                                class="form-control form-control-line" name="harga">
+                                                class="form-control form-control-line" name="harga" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Foto</label>
                                         <div class="col-md-12">
                                             <input type="file"
-                                                class="form-control form-control-line" name="foto">
+                                                class="form-control form-control-line" name="foto" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Kategori</label>
                                         <div class="col-md-12">
-                                            <select class="form-control" name="kategori">
+                                            <select class="form-control" name="kategori" required autofocus>
                                                 <option value="none" selected disabled hidden>
                                                     Silahkan pilih di bawah ini
                                                 </option>
                                                 <?php
                                                     while($data_kategori = $query->fetch(PDO::FETCH_ASSOC)){
                                                         echo '
-                                                            <option class="form-control" value="'.$data_kategori['kategori_id'].'" name="kategori">
+                                                            <option class="form-control" value="'.$data_kategori['kategori_id'].'" name="kategori" required autofocus>
                                                                 '.$data_kategori['nama_kategori'].'
-                                                            </option>
+                                                            </option> 
                                                         ';
                                                     }
                                                 ?>

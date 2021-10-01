@@ -298,21 +298,21 @@
                                         <label class="col-md-12">Nama Produk</label>
                                         <div class="col-md-12">
                                             <input type="text" name="nama_produk"
-                                                class="form-control form-control-line" value="<?php echo $result['namapk']; ?>">
+                                                class="form-control form-control-line" value="<?php echo $result['namapk']; ?>" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Harga</label>
                                         <div class="col-md-12">
                                             <input type="number" name="harga"
-                                                class="form-control form-control-line" value=<?php echo $result['harga']; ?>>
+                                                class="form-control form-control-line" value=<?php echo $result['harga']; ?> required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Foto</label>
                                         <div class="col-md-12">
                                             <input type="file" name="foto"
-                                                class="form-control form-control-line" value=<?php echo $result['foto']; ?>>
+                                                class="form-control form-control-line" value=<?php echo $result['foto']; ?> required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -325,7 +325,7 @@
                                                 <?php
                                                     while($result2 = $sql2->fetch(PDO::FETCH_ASSOC)){
                                                         echo '
-                                                            <option class="form-control" value="'.$result2['kategori_id'].'" '.($result['nama_kategori'] === $result2['nama_kategori'] ? 'selected="selected"' : '').' name="kategori">
+                                                            <option class="form-control" value="'.$result2['kategori_id'].'" '.($result['nama_kategori'] === $result2['nama_kategori'] ? 'selected="selected"' : '').' name="kategori" required autofocus>
                                                                 '.$result2['nama_kategori'].'
                                                             </option>
                                                         ';

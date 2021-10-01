@@ -1,1 +1,0 @@
-create table produk_kulit (pkid int(50) primary key auto_increment, kategori_id int(50), namapk varchar(50), foto varchar(100),harga varchar(25) foreign key (kategori_id) references kategori(kategori_id))
