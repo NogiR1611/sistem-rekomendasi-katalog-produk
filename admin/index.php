@@ -336,7 +336,7 @@
                                                     <tr>
                                                         <td>'.$index.'</td>
                                                         <td>'.$rating_produk['namapk'].'</td>
-                                                        <td>'.$rating_produk['rating_tot'].'</td>
+                                                        <td>'.number_format((float)$rating_produk['rating_tot'],1,',','.').'</td>
                                                         <td>'.$rating_produk['jumlah_pemberi_rating'].'</td>
                                                     </tr>
                                                 ';

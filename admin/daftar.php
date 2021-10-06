@@ -95,15 +95,6 @@
                                         <input id="confirm-password" type="password" class="form-control" name="confirm-password" required data-eye>
                                         <?php echo $passwordErr; ?>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="custom-checkbox custom-control">
-                                            <input type="checkbox" name="agree" id="agree" class="custom-control-input" required="">
-                                            <label for="agree" class="custom-control-label">Saya setuju dengan <a href="#">Ketentuan dan Persyaratan</a></label>
-                                            <div class="invalid-feedback">
-                                                Anda harus setuju dengan ketentuan dan persyaratan yang berlaku
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="form-group m-0">
                                         <button type="submit" class="btn btn-primary btn-block" name="register">
                                             Daftar

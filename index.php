@@ -17,6 +17,7 @@
     $sql = $db->prepare($ambil_data_kategori);
 
     $sql->execute();
+    
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,7 +30,7 @@
     </head>
     <body class="bg-light">
         <section>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">l
                 <div class="container-fluid">
                     <a class="navbar-brand fs-6" href="#">
                         <img src="/assets/images/logo.png" class="img-logo" alt="" />

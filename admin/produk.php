@@ -13,7 +13,7 @@
 
     $alert = '';
 
-    $ambil_data_produk = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id";
+    $ambil_data_produk = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori, rating.ratingvalue as rating from produk_kulit left join rating on produk_kulit.pkid=rating.pkid inner join kategori on produk_kulit.kategori_id=kategori.kategori_id";
 
     $sql = $db->prepare($ambil_data_produk);
 
@@ -273,7 +273,7 @@
                                                         <td>'.rupiah($row['harga']).'</td>
                                                         <td>'.$row['foto'].'</td>
                                                         <td>'.$row['nama_kategori'].'</td>
-                                                        <td>4.3</td>
+                                                        <td>'.($row && $row['rating'] ? number_format((float)$row['rating'],1,',','') : '0.0').'</td>
                                                         <td class="row justify-content-center">
                                                             <a href="produk/edit.php?id='.$row['pkid'].'"
                                                                 class="btn d-inline-block w-auto btn-success text-white no-block d-flex align-items-center mx-2">

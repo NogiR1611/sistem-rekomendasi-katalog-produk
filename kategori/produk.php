@@ -57,6 +57,10 @@
 
     if(isset($_POST['tambah'])){
 
+        if(!isset($_POST['rating'])){
+            $_POST['rating'] = 5;
+        }
+
         $baca_id_pengguna = "SELECT userid FROM user WHERE nama=:nama";
 
         $query1 = $db->prepare($baca_id_pengguna);
@@ -88,7 +92,7 @@
         }
         else{
             $tambah_rating = "INSERT INTO rating (pkid, userid, ratingvalue) VALUES (:pkid, :userid, :ratingvalue)"; 
-            
+                
             $query2 = $db->prepare($tambah_rating);
 
             $params = array(
