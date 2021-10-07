@@ -40,6 +40,16 @@
                     $_SESSION['nama'] = $userTest;
                     $_SESSION['password'] = $passTest;
                     $_SESSION['hak_akses'] = $user['hak_akses'];
+
+                    if(!empty($_POST['remember'])){
+                        setcookie ('user-login', $userTest, time() + (60 * 60 * 24 * 365 * 10));
+                    }
+                    else{
+                        if($_COOKIE['user-login']){
+                            setcookie ('user-login', '');
+                        }
+                    }
+
                     // login sukses, alihkan ke halaman home
                     header("location: index.php");
                 }
@@ -101,7 +111,7 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="custom-checkbox custom-control">
-                                            <input type="checkbox" name="remember" id="remember" class="custom-control-input">
+                                            <input type="checkbox" name="remember" id="remember" class="custom-control-input" <?php if(isset($_COOKIE['user-login'])) {?> checked <?php } ?> />
                                             <label for="remember" class="custom-control-label">Ingat saya</label>
                                         </div>
                                     </div>

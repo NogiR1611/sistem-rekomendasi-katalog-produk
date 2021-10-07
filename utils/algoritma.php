@@ -95,12 +95,33 @@
         }
     }
 
-    for($k=0; $k<count($produk_rating_kosong); $k++){
-        for($l=0; $l<count($list_produk_similarity); $l++){
-            echo 'x = '.$produk_rating_kosong[$k].' dan y = '.array_keys($list_produk_similarity)[$l].'<br/>';
-        }
-    }
-   
+    $urutan_produk_similarity = array();
+
+    // for($k=0; $k<count($produk_rating_kosong); $k++){
+    //     for($l=0; $l<count($list_produk_similarity); $l++){
+            
+    //         //$urutan_produk_similarity[$produk_rating_kosong[$k]][] = array_keys($list_produk_similarity)[$l];
+
+    //         if($k === 0){
+    //             $urutan_produk_similarity[$produk_rating_kosong[$k]][] = array_keys($list_produk_similarity)[$l];
+    //         }
+    //         else{
+    //             $urutan_produk_similarity[$produk_rating_kosong[$k]][] = $urutan_produk_similarity[$produk_rating_kosong[$k-1]][$l];
+                
+    //             if($urutan_produk_similarity[$produk_rating_kosong[$k]][$l] === $produk_rating_kosong[$k-1]){
+    //                 //unset($urutan_produk_similarity[$produk_rating_kosong[$k]][$l]);
+    //                 array_splice($urutan_produk_similarity[$produk_rating_kosong[$k]],$l,1);
+    //             }
+    //         }
+            
+    //         //echo 'x = '.$produk_rating_kosong[$k].' dan y = '.array_keys($list_produk_similarity)[$l].' - '.$l.' - '.$k.'<br/>';
+    //     }
+    // }
+
+    //array_splice($urutan_produk_similarity['Sampel Jaket 1'],1,1);
+    print_r($urutan_produk_similarity);
+    //print_r(array_search(array_keys($list_produk_similarity)[0], array_keys($list_produk_similarity)));
+    
     function similarity($a,$b){
         $ratingA = is_string($a['ratingvalue']) ? floatval(trim($a['ratingvalue'])) : null;
         $ratingB = is_string($b['ratingvalue']) ? floatval(trim($b['ratingvalue'])) : null;

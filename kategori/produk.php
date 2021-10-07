@@ -154,7 +154,7 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="../pengaturan.php">Pengaturan</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="../utils/logout.php">Logout</a></li>
+                                <li><a class="dropdown-item" href="..utils/logout.php">Logout</a></li>
                             </ul>
                         </li>
                     </ul>
