@@ -21,11 +21,11 @@
 
     $ambil_data_kategori = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id where kategori.nama_kategori = :kategori";
     
-    $sql = $db->prepare($ambil_data_kategori);
+    $ambil_produk = $db->prepare($ambil_data_kategori);
 
-    $sql->bindParam(':kategori',$kategori);
+    $ambil_produk->bindParam(':kategori',$kategori);
 
-    $sql->execute();
+    $ambil_produk->execute();
 
     function rupiah($rupiah){
         $hasil_rupiah = "Rp " . number_format($rupiah,2,',','.');
@@ -74,7 +74,7 @@
                 <p class="text-dark fs-1 fw-bold text-center">Kategori : <?php echo $kategori; ?></p>
                 <div class="row justify-content-start min-vh-100 w-100 mx-auto">
                         <?php
-                            while($hasil = $sql->fetch(PDO::FETCH_ASSOC)){
+                            while($hasil = $ambil_produk->fetch(PDO::FETCH_ASSOC)){
                                 echo '
                                     <div class="col-md-4">
                                         <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">

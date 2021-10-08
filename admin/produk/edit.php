@@ -54,25 +54,17 @@
         $alert = "";
         $nama_produk = filtered_input($_POST['nama_produk']);
         $harga = filtered_input($_POST['harga']);
-        $nama_foto = $_FILES['foto']['name'];
         $kategori = filtered_input($_POST['kategori']);
-
-        //proses pengolahan foto
-        $x = explode('.',$nama_foto);
-        $file_tmp = $_FILES['foto']['tmp_name'];
-
-        move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
         
         try{
             //membuat query
-            $sql = "UPDATE produk_kulit SET kategori_id=:kategori, namapk= :namapk, foto=:foto, harga=:harga WHERE pkid=:pkid";
+            $sql = "UPDATE produk_kulit SET kategori_id=:kategori, namapk= :namapk, harga=:harga WHERE pkid=:pkid";
 
             $stmt = $db->prepare($sql);
 
             $data = array(
                 ':kategori' => $kategori,
                 ':namapk' => $nama_produk,
-                ':foto' => $nama_foto,
                 ':harga' => $harga,
                 ':pkid' => $id_produk
             );
@@ -220,7 +212,7 @@
                                             <a class="dropdown-item" href="../pengaturan.php"><i
                                                 class="ti-settings m-r-5 m-l-5"></i> Pengaturan</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="..utils/logout.php"><i
+                                            <a class="dropdown-item" href="../utils/logout.php"><i
                                                 class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
                                         </div>
                                     </div>
@@ -306,13 +298,6 @@
                                         <div class="col-md-12">
                                             <input type="number" name="harga"
                                                 class="form-control form-control-line" value=<?php echo $result['harga']; ?> required autofocus>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-md-12">Foto</label>
-                                        <div class="col-md-12">
-                                            <input type="file" name="foto"
-                                                class="form-control form-control-line" value=<?php echo $result['foto']; ?> required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">

@@ -95,43 +95,67 @@
         }
     }
 
-    $urutan_produk_similarity = array();
-
-    // for($k=0; $k<count($produk_rating_kosong); $k++){
-    //     for($l=0; $l<count($list_produk_similarity); $l++){
-            
-    //         //$urutan_produk_similarity[$produk_rating_kosong[$k]][] = array_keys($list_produk_similarity)[$l];
-
-    //         if($k === 0){
-    //             $urutan_produk_similarity[$produk_rating_kosong[$k]][] = array_keys($list_produk_similarity)[$l];
-    //         }
-    //         else{
-    //             $urutan_produk_similarity[$produk_rating_kosong[$k]][] = $urutan_produk_similarity[$produk_rating_kosong[$k-1]][$l];
-                
-    //             if($urutan_produk_similarity[$produk_rating_kosong[$k]][$l] === $produk_rating_kosong[$k-1]){
-    //                 //unset($urutan_produk_similarity[$produk_rating_kosong[$k]][$l]);
-    //                 array_splice($urutan_produk_similarity[$produk_rating_kosong[$k]],$l,1);
-    //             }
-    //         }
-            
-    //         //echo 'x = '.$produk_rating_kosong[$k].' dan y = '.array_keys($list_produk_similarity)[$l].' - '.$l.' - '.$k.'<br/>';
-    //     }
-    // }
-
-    //array_splice($urutan_produk_similarity['Sampel Jaket 1'],1,1);
-    print_r($urutan_produk_similarity);
-    //print_r(array_search(array_keys($list_produk_similarity)[0], array_keys($list_produk_similarity)));
-    
     function similarity($a,$b){
         $ratingA = is_string($a['ratingvalue']) ? floatval(trim($a['ratingvalue'])) : null;
         $ratingB = is_string($b['ratingvalue']) ? floatval(trim($b['ratingvalue'])) : null;
         
         return $ratingA * $ratingB;
     }
-    
-    $grup_namapk_1 = _group_by($array_normalisasi_data,'namapk')['Sampel Dompet 1'];
-    $grup_namapk_2 = _group_by($array_normalisasi_data,'namapk')['Sampel Hand bag 1'];
 
-    //print_r(array_map('similarity', _group_by($array_normalisasi_data,'namapk')['Sampel Dompet 1'], _group_by($array_normalisasi_data,'namapk')['Sampel Hand bag 1']));
+    function jumlah_kuadrat_bilangan($arr){
+        $total = 0;
+        
+        foreach($arr as $keys => $values){
+            $total += pow($values['ratingvalue'],2);
+        }   
+
+        return sqrt($total);
+    }
+
+    $urutan_produk_similarity = array();
+
+    $list_produk = array_keys($list_produk_similarity);
+
+    //proses penentuan pasangan similarity antara produk belum terisi rating dengan semua produk
+    foreach($produk_rating_kosong as $key1 => $values1){
+        foreach($list_produk as $key2 => $values2){
+            if($key1 === 0){
+                $urutan_produk_similarity[$values1][] = $values2;
+            }
+            else{
+                $y = array_diff($urutan_produk_similarity[$produk_rating_kosong[$key1-1]],[$produk_rating_kosong[$key1-1]]);
+                $urutan_produk_similarity[$values1] = array_values($y);
+            }
+        }
+    }
+
+    //proses perhitungan similarity antara produk belum terisi rating dengan semua produk
+    $x = array();
+
+    foreach($urutan_produk_similarity as $key3 => $values3){
+
+        foreach($values3 as $item){
+            //echo ''.$key3.''.$item.'<br/>';
+            $x = _group_by($array_normalisasi_data,'namapk')[$key3];
+            $y = _group_by($array_normalisasi_data,'namapk')[$item];
+
+            $perkalian_antar_produk = array_map('similarity',$x,$y);
+            $jumlah_antar_produk = array_sum($perkalian_antar_produk);
+            $akar_produk_x = jumlah_kuadrat_bilangan($x);
+            $akar_produk_y = jumlah_kuadrat_bilangan($y);
+            $total_similarity = ($jumlah_antar_produk / $akar_produk_x * $akar_produk_y);
+            $kumpulan_similarity[$key3][$item] = number_format($total_similarity, 2, '.', '');
+        }
+    }   
     
+    //perhitungan prediksi dengan menggunakan metode weight sum
+    
+
+    //$grup_namapk_1 = _group_by($array_normalisasi_data,'namapk')['Sampel Dompet 1'];
+    //$grup_namapk_2 = _group_by($array_normalisasi_data,'namapk')['Sampel Hand bag 1'];
+
+    print_r($kumpulan_similarity);
+    //print_r(jumlah_kuadrat_bilangan($grup_namapk_1));
+    //print_r(array_map('similarity',$grup_namapk_1, $grup_namapk_2,));
+        
 ?>

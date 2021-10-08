@@ -172,7 +172,7 @@
                                             <a class="dropdown-item" href="../pengaturan.php"><i
                                                 class="ti-settings m-r-5 m-l-5"></i> Pengaturan</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="..utils/logout.php"><i
+                                            <a class="dropdown-item" href="../utils/logout.php"><i
                                                 class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
                                         </div>
                                     </div>

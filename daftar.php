@@ -26,26 +26,35 @@
             $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
             $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-            //membuat query
-            $sql = "INSERT INTO user (nama, password, hak_akses) VALUES (:username, :password, :hak_akses)";
-            $stmt = $db->prepare($sql);
+            //cek akun yang ingin didaftar
+            $cek_akun = "SELECT nama FROM user WHERE nama=:nama";
+            $buat_akun = $db->prepare($cek_akun);
 
-            //ikat parameter ke query
-            $params = array(
-                ":username" => $username,
-                ":password" => $password,
-                ":hak_akses" => 'pengguna'
-            );
+            $buat_akun->bindParam(':nama',$username);
 
-            //eksekusi query untuk menyimpan ke database
-            $saved = $stmt->execute($params);
+            $buat_akun->execute();
 
-            echo $saved;
-            
-            //jika query berhasil menyimpan data maka user dialihkan menuju halaman login
-            if($saved) header("location: login.php");
-            
-            //$alertErr = "<div class='text-danger'>Username atau password anda salah</div>";
+            if($buat_akun->rowCount() > 0){
+                $alertErr = "<div class='alert alert-danger' role='alert'>Maaf akun sudah terdaftar</div>";
+            }
+            else{
+                //membuat query
+                $sql = "INSERT INTO user (nama, password, hak_akses) VALUES (:username, :password, :hak_akses)";
+                $stmt = $db->prepare($sql);
+
+                //ikat parameter ke query
+                $params = array(
+                    ":username" => $username,
+                    ":password" => $password,
+                    ":hak_akses" => 'pengguna'
+                );
+
+                //eksekusi query untuk menyimpan ke database
+                $saved = $stmt->execute($params);
+                
+                //jika query berhasil menyimpan data maka user dialihkan menuju halaman login
+                if($saved) header("location: login.php");
+            }
         }
     }
 
