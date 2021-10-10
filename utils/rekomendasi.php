@@ -75,6 +75,7 @@
     //lakukan perhitungan similarity(x,y) antara produk belum terisi rating dengan semua produk
     foreach($urutan_produk_similarity as $key3 => $values3){
         foreach($values3 as $item){
+            $total_similarity = 0;
             $x = _group_by($array_normalisasi_data,'namapk')[$key3];
             $y = _group_by($array_normalisasi_data,'namapk')[$item];
 
@@ -85,6 +86,7 @@
             if($akar_produk_x * $akar_produk_y > 0){
                 $total_similarity = ($jumlah_antar_produk / $akar_produk_x * $akar_produk_y);
             }
+
             $kumpulan_similarity[$key3][$item] = number_format($total_similarity, 2, '.', '');
         }
     }   
