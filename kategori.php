@@ -15,17 +15,43 @@
     if(isset($_GET['kategori'])){
         $kategori = $_GET['kategori'];
     }
-    else{
-        die("sorry. No kategori selected");
+    
+    //ambil jumlah data produk per kategori
+    $jumlah_produk_per_kategori = "SELECT count(namapk) from produk_kulit";
+
+    $ambil_jumlah_produk = $db->prepare($jumlah_produk_per_kategori);
+
+    $ambil_jumlah_produk->execute();
+
+    $arr_jumlah_produk = $ambil_jumlah_produk->fetchAll();
+
+    $jumlah_produk = 0;
+
+    foreach($arr_jumlah_produk as $keys => $values){
+        $jumlah_produk = $values['count(namapk)'];
     }
 
-    $ambil_data_kategori = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id where kategori.nama_kategori = :kategori";
+    $batas = 6;
+    $halaman = isset($_GET['kategori']) && isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
+    $halaman_awal = ($halaman>1) ? ($halaman * $batas) - $batas : 0;
+
+    $previous = $halaman - 1;
+    $next = $halaman + 1;
+
+    //ambil data produk per kategori
+    $ambil_data_kategori = "SELECT produk_kulit.pkid as pkid, produk_kulit.namapk as namapk, produk_kulit.harga as harga, produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id where kategori.nama_kategori = :kategori limit :awal,:batas";
     
     $ambil_produk = $db->prepare($ambil_data_kategori);
 
     $ambil_produk->bindParam(':kategori',$kategori);
 
+    $ambil_produk->bindParam(':awal',$halaman_awal, PDO::PARAM_INT);
+
+    $ambil_produk->bindParam(':batas',$batas, PDO::PARAM_INT);
+
     $ambil_produk->execute();
+    
+    $total_halaman = ceil($jumlah_produk/$batas);
 
     function rupiah($rupiah){
         $hasil_rupiah = "Rp " . number_format($rupiah,2,',','.');
@@ -94,11 +120,21 @@
                 </div>
                 <div class="d-flex justify-content-center mt-4">
                     <ul class="pagination align-bottom">
-                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="<?php if($halaman > 1){ echo '?kategori='.$_GET['kategori'].'&&halaman='.$previous.''; } ?>">Kembali</a>
+                        </li>
+                        <?php
+                            for($x=1; $x<=$total_halaman; $x++){
+                        ?>
+                        <li class="page-item <?php if($x === $halaman){echo "active";}?>">
+                            <a class="page-link" href="?kategori=<?php echo $_GET['kategori']; ?>&&halaman=<?php echo $x ?>"><?php echo $x; ?></a>
+                        </li>
+                        <?php
+                            }
+                        ?>
+                        <li class="page-item">
+                            <a class="page-link" href="<?php if($halaman < $total_halaman){echo '?kategori='.$_GET['kategori'].'&&halaman='.$next.'';} ?>">Selanjutnya</a>
+                        </li>
                     </ul>
                 </div>
             </div>

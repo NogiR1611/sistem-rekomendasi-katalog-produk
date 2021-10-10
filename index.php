@@ -1,8 +1,10 @@
 <?php
 
+    session_start();
+
     include 'config/config.php';
 
-    session_start();
+    include 'utils/rekomendasi.php';
 
     if($_SESSION['hak_akses'] !== 'pengguna'){
         header("location: login.php");
@@ -12,12 +14,46 @@
         header("location: login.php");
     }
 
+    //ambil data kategori
     $ambil_data_kategori = "SELECT produk_kulit.foto as foto, kategori.nama_kategori as nama_kategori from produk_kulit inner join kategori on produk_kulit.kategori_id=kategori.kategori_id group by kategori.nama_kategori";
 
     $sql = $db->prepare($ambil_data_kategori);
 
     $sql->execute();
+
+    //ambil data rating dari user untuk semua produk untuk ditampilkan bila sudah di input rating, kalo belum input rating data tidak akan ditampilkan
+    $ambil_rating_user = "select A.nama, B.namapk, C.ratingvalue from rating C inner join user A on C.userid=A.userid inner join produk_kulit B on C.pkid=B.pkid where A.nama = :nama";
+
+    $rating_user = $db->prepare($ambil_rating_user);
+
+    $rating_user->bindParam(':nama', $_SESSION['nama']);
+
+    $rating_user->execute();
+
+    $hasil_rating_user = $rating_user->fetchAll(PDO::FETCH_ASSOC);
+
+    //ambil data rating dari user untuk semua produk untuk ditampilkan walaupun ada produk yang ratingnya masih kosong
+    $ambil_rating_user2 = "SELECT A.userid, A.nama, B.pkid, B.namapk, B.foto, B.harga, C.ratingvalue FROM user A CROSS JOIN produk_kulit B LEFT JOIN rating C ON A.userid = C.userid AND C.pkid = B.pkid WHERE A.hak_akses != 'admin' AND A.nama =:nama ORDER BY A.userid, B.pkid";
     
+    $rating_user2 = $db->prepare($ambil_rating_user2);
+
+    $rating_user2->bindParam(':nama', $_SESSION['nama']);
+
+    $rating_user2->execute();
+
+    $hasil_rating_user2 = $rating_user2->fetchAll(PDO::FETCH_ASSOC);
+        
+    $array_terfilter = array();
+    
+    if($hasil_rating_user){
+        foreach($weight_sum as $keys6 => $values6){
+            foreach($hasil_rating_user2 as $key6 => $value6){
+                if($keys6 === $value6['namapk']){
+                    $array_terfilter[] = $value6;
+                }
+            }
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -50,7 +86,7 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="pengaturan.php">Pengaturan</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href=".utils/logout.php">Logout</a></li>
+                                <li><a class="dropdown-item" href="utils/logout.php">Logout</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -74,83 +110,35 @@
             </div>
  
             <!-- Produk di rekomendasikan -->
-            <!-- <div class="mx-auto mt-3 mb-5">
+            <?php 
+                if($hasil_rating_user){
+            ?>
+            <div class="mx-auto mt-3 mb-5">
             <h4 class="my-5 text-center">Produk yang direkomendasi untuk anda</h4>
             <div class="row justify-content-start w-100 min-vh-100">
-                <div class="col-md-4">
-                    <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
-                        <a href="/kategori/produk.php" class="text-decoration-none">
-                            <img src="/assets/images/Sepatu/1.png" class="w-100 h-100 position-relative object-fill">
-                            <div class="p-3">
-                                <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">Sampel Sepatu 1</p>
-                                <p class="text-dark fs-6 mb-0">Rp 40.000</p>
-                            </div>        
-                            <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
-                        </a>    
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
-                        <a href="/kategori/produk.php" class="text-decoration-none">
-                            <img src="/assets/images/Dompet/2.png" class="w-100 h-100 position-relative object-fill">
-                            <div class="p-3">
-                                <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">Sampel Dompet 2</p>
-                                <p class="text-dark fs-6 mb-0">Rp 35.000</p>
-                            </div>        
-                            <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
-                        </a>    
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
-                        <a href="/kategori/produk.php" class="text-decoration-none">
-                            <img src="/assets/images/Jaket/1.png" class="w-100 h-100 position-relative object-fill">
-                            <div class="p-3">
-                                <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">Sampel Jaket 1</p>
-                                <p class="text-dark fs-6 mb-0">Rp 86.000</p>
-                            </div>        
-                            <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
-                        </a>    
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
-                        <a href="/kategori/produk.php" class="text-decoration-none">
-                            <img src="/assets/images/Tas/1.png" class="w-100 h-100 position-relative object-fill">
-                            <div class="p-3">
-                                <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">Sampel Tas 1</p>
-                                <p class="text-dark fs-6 mb-0">Rp 65.000</p>
-                            </div>        
-                            <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
-                        </a>    
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
-                        <a href="/kategori/produk.php" class="text-decoration-none">
-                            <img src="/assets/images/Dompet/3.png" class="w-100 h-100 position-relative object-fill">
-                            <div class="p-3">
-                                <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">Sampel Dompet 3</p>
-                                <p class="text-dark fs-6 mb-0">Rp 34.000</p>
-                            </div>        
-                            <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
-                        </a>    
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
-                        <a href="/kategori/produk.php" class="text-decoration-none">
-                            <img src="/assets/images/ID Card/2.png" class="w-100 h-100 position-relative object-fill">
-                            <div class="p-3">
-                                <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">Sampel ID Card 2</p>
-                                <p class="text-dark fs-6 mb-0">Rp 24.000</p>
-                            </div>        
-                            <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
-                        </a>    
-                    </div>
-                </div>
+                <?php
+                    foreach($array_terfilter as $keys => $values){
+                        echo '
+                            <div class="col-md-4">
+                                <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
+                                    <a href="/kategori/produk.php?id='.$values['pkid'].'" class="text-decoration-none">
+                                        <img src="admin/assets/images/produk/'.$values['foto'].'" class="w-100 h-100 position-relative object-fill">
+                                        <div class="p-3">
+                                            <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">'.$values['namapk'].'</p>
+                                            <p class="text-dark fs-6 mb-0">'.rupiah($values['harga']).'</p>
+                                        </div>        
+                                        <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
+                                    </a>    
+                                </div>      
+                            </div>            
+                        ';
+                    }
+                ?>
             </div>
-            </div> -->
+            <?php
+                }
+            ?>
+            </div>
             <footer class="text-center text-lg-start bg-light text-muted">
                 <div class="text-center p-4">
                     Copyright &copy; 2021 - Powered by Intana Leather Collection 
