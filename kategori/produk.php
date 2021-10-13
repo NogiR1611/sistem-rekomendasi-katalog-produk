@@ -163,7 +163,7 @@
             <div className="d-flex justify-content-center p-3 min-vh-100 w-100">
                 <div class="d-flex flex-column justify-content-center w-50 mx-auto">
                     <?php echo $alert; ?>
-                    <img src="../admin/assets/images/produk/<?php echo $hasil['foto']; ?>" class="ratio ratio-1x1 mt-5 image-produk mx-auto" />
+                    <img src="../admin/assets/images/produk/<?php echo $hasil['foto']; ?>" class="ratio ratio-1x1 mt-5 w-50 h-50 image-produk mx-auto" />
                     <div class="my-3">
                         <p class="text-dark fs-3 fw-bold text-center"><?php echo $hasil['namapk']; ?></p>
                         <p class="text-dark fs-6 mb-3 fw-bold">Harga  : <?php echo rupiah($hasil['harga']); ?></p>

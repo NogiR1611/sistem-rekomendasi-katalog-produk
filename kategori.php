@@ -102,10 +102,10 @@
                         <?php
                             while($hasil = $ambil_produk->fetch(PDO::FETCH_ASSOC)){
                                 echo '
-                                    <div class="col-md-4">
+                                    <div class="col-sm-4">
                                         <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
                                             <a href="/kategori/produk.php?id='.$hasil['pkid'].'" class="text-decoration-none">
-                                                <img src="admin/assets/images/produk/'.$hasil['foto'].'" class="w-100 h-100 position-relative object-fill">
+                                                <img src="admin/assets/images/produk/'.$hasil['foto'].'" class="w-75 h-75 position-relative object-fill d-block mx-auto">
                                                 <div class="p-3">
                                                     <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">'.$hasil['namapk'].'</p>
                                                     <p class="text-dark fs-6 mb-0">'.rupiah($hasil['harga']).'</p>
