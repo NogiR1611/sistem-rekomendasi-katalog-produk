@@ -249,12 +249,12 @@
                                                         <td>'.$row['nama_kategori'].'</td>
                                                         <td class="row justify-content-center">
                                                             <a href="kategori/edit.php?id='.$row['kategori_id'].'"
-                                                                class="btn d-inline-block w-auto btn-success text-white no-block d-flex align-items-center mx-2">
+                                                                class="btn d-inline-block w-auto btn-success text-white no-block d-flex align-items-center mx-1">
                                                                 <i class="mdi mdi-table-edit"></i> <span class="hide-menu m-l-5">Edit</span>
                                                             </a>
                                                             <a href="?delete='.$row['kategori_id'].'"
                                                                 onclick="return confirm(`Apakah anda yakin ingin menghapus kategori ini?`)"
-                                                                class="btn d-inline-block w-auto btn-danger text-white no-block d-flex align-items-center mx-2">
+                                                                class="btn d-inline-block w-auto btn-danger text-white no-block d-flex align-items-center mx-1">
                                                                 <i class="mdi mdi-delete"></i> <span class="hide-menu m-l-5">Hapus</span>
                                                             </a>
                                                         </td>

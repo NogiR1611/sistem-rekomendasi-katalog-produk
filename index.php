@@ -96,11 +96,11 @@
                 <?php
                     while($hasil = $sql->fetch(PDO::FETCH_ASSOC)){
                         echo '
-                            <div class="col-sm-4">
-                                <div class="mx-1 my-1 position-relative cursor-pointer" style="background-color: rgba(0,0,0,0.5); aspect-ratio: 1/1;">
+                            <div class="col-md-4">
+                                <div class="mx-1 my-1 position-relative cursor-pointer" style="background-color: rgba(0,0,0,0.5); aspect-ratio: 1/1; width: 85%; height: 85%;">
                                     <a href="kategori.php?kategori='.$hasil['nama_kategori'].'">
-                                        <img src="admin/assets/images/produk/'.$hasil['foto'].'" class="w-100 h-100 position-relative object-fill brightness-75" alt="" />
-                                        <p class="position-absolute top-50 start-50 translate-middle fs-1 text-light text-break fw-bold">'.$hasil['nama_kategori'].'</p>
+                                        <img src="admin/assets/images/produk/'.$hasil['foto'].'" class="w-100 h-100 position-absolute object-fill brightness-75 d-block mx-auto" alt="" />
+                                        <p class="position-absolute top-50 start-50 translate-middle fs-2 text-light text-break fw-bold">'.$hasil['nama_kategori'].'</p>
                                     </a>    
                                 </div>
                             </div>
@@ -122,7 +122,7 @@
                             <div class="col-md-4">
                                 <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
                                     <a href="/kategori/produk.php?id='.$values['pkid'].'" class="text-decoration-none">
-                                        <img src="admin/assets/images/produk/'.$values['foto'].'" class="w-100 h-100 position-relative object-fill">
+                                        <img src="admin/assets/images/produk/'.$values['foto'].'" class="w-75 h-75 position-relative object-fill d-block mx-auto">
                                         <div class="p-3">
                                             <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">'.$values['namapk'].'</p>
                                             <p class="text-dark fs-6 mb-0">'.rupiah($values['harga']).'</p>

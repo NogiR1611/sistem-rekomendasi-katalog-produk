@@ -35,11 +35,8 @@
         //eksekusi query untuk menyimpan ke database
         $saved = $stmt->execute($params);
 
-        $alert = '
-            <div class="alert alert-success" role="alert">
-                Data berhasil di tambahkan
-            </div>    
-        ';
+        //jika query berhasil menyimpan data maka user dialihkan menuju halaman kategori
+        header("location: ../kategori.php");
     }
 
     function filtered_input($data) {
