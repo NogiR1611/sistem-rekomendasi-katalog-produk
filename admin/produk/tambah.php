@@ -17,35 +17,43 @@
 
     $query->execute();
     
+    $alert = "";
+
     if(isset($_POST['tambah'])){
-        $nama_produk = filtered_input($_POST['nama-produk']);
-        $harga = filtered_input($_POST['harga']);
-        $kategori = filtered_input($_POST['kategori']);
+        if(!isset($_POST['kategori'])){
+            //membuat validasi kategori
+            $alert = "<div class='text-danger'>Maaf kategori tidak boleh kosong</div>";
+        }
+        else{
+            $nama_produk = filtered_input($_POST['nama-produk']);
+            $harga = filtered_input($_POST['harga']);
+            $kategori = filtered_input($_POST['kategori']);
 
-        //proses pengolahan foto 
-        $nama_foto = $_FILES['foto']['name'];
-        $x = explode('.',$nama_foto);
-        $file_tmp = $_FILES['foto']['tmp_name'];
-        
-        move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
+            //proses pengolahan foto 
+            $nama_foto = $_FILES['foto']['name'];
+            $x = explode('.',$nama_foto);
+            $file_tmp = $_FILES['foto']['tmp_name'];
+            
+            move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
 
-        //membuat query
-        $sql = "INSERT INTO produk_kulit(kategori_id, namapk, foto, harga) VALUES (:kategori_id,:namapk,:foto,:harga)";
-        $stmt = $db->prepare($sql);
+            //membuat query
+            $sql = "INSERT INTO produk_kulit(kategori_id, namapk, foto, harga) VALUES (:kategori_id,:namapk,:foto,:harga)";
+            $stmt = $db->prepare($sql);
 
-        //ikat parameter ke query
-        $params = array(
-            ":kategori_id" => $kategori,
-            ":namapk" => $nama_produk,
-            ":foto" => $nama_foto,
-            ":harga" => $harga,
-        );
+            //ikat parameter ke query
+            $params = array(
+                ":kategori_id" => $kategori,
+                ":namapk" => $nama_produk,
+                ":foto" => $nama_foto,
+                ":harga" => $harga,
+            );
 
-        //eksekusi query untuk menyimpan ke database
-        $saved = $stmt->execute($params);
+            //eksekusi query untuk menyimpan ke database
+            $saved = $stmt->execute($params);
 
-        //jika query berhasil menyimpan data maka user dialihkan menuju halaman produk
-        header("location: ../produk.php");
+            //jika query berhasil menyimpan data maka user dialihkan menuju halaman produk
+            header("location: ../produk.php");
+        }
     }
 
     function filtered_input($data) {
@@ -269,13 +277,13 @@
                                         <label class="col-md-12">Foto</label>
                                         <div class="col-md-12">
                                             <input type="file"
-                                                class="form-control form-control-line" name="foto" required autofocus>
+                                                class="form-control form-control-line" name="foto" accept=".png, .jpg, .jpeg" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-12">Kategori</label>
                                         <div class="col-md-12">
-                                            <select class="form-control" name="kategori" required autofocus>
+                                            <select class="form-control" name="kategori">
                                                 <option value="none" selected disabled hidden>
                                                     Silahkan pilih di bawah ini
                                                 </option>
@@ -289,6 +297,7 @@
                                                     }
                                                 ?>
                                             </select>
+                                            <?php echo $alert; ?>
                                         </div>
                                     </div>
                                     <div class="form-group">
