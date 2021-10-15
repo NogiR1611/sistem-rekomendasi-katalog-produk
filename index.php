@@ -49,6 +49,7 @@
         foreach($weight_sum as $keys6 => $values6){
             foreach($hasil_rating_user2 as $key6 => $value6){
                 if($keys6 === $value6['namapk']){
+                    $value6['nilai_prediksi'] = $values6;
                     $array_terfilter[] = $value6;
                 }
             }
@@ -117,7 +118,7 @@
             <h4 class="my-5 text-center">Produk yang direkomendasi untuk anda</h4>
             <div class="row justify-content-start w-100 min-vh-100">
                 <?php
-                    foreach($array_terfilter as $keys => $values){
+                    foreach(array_slice($array_terfilter,0,5) as $keys => $values){
                         echo '
                             <div class="col-md-4">
                                 <div class="mx-1 my-1 pb-1 position-relative cursor-pointer rounded shadow-sm" style="background-color: white; aspect-ratio: 1/1;">
@@ -126,6 +127,7 @@
                                         <div class="p-3">
                                             <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">'.$values['namapk'].'</p>
                                             <p class="text-dark fs-6 mb-0">'.rupiah($values['harga']).'</p>
+                                            <p class="text-dark fs-6 mb-0">Nilai Prediksi : '.$values['nilai_prediksi'].'</p>    
                                         </div>        
                                         <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
                                     </a>    

@@ -56,9 +56,16 @@
         $harga = filtered_input($_POST['harga']);
         $kategori = filtered_input($_POST['kategori']);
         
+        //proses pengolahan foto 
+        $nama_foto = $_FILES['foto']['name'];
+        $x = explode('.',$nama_foto);
+        $file_tmp = $_FILES['foto']['tmp_name'];
+        
+        move_uploaded_file($file_tmp,'../assets/images/produk/'.$nama_foto);
+
         try{
             //membuat query
-            $sql = "UPDATE produk_kulit SET kategori_id=:kategori, namapk= :namapk, harga=:harga WHERE pkid=:pkid";
+            $sql = "UPDATE produk_kulit SET kategori_id=:kategori, namapk= :namapk, harga=:harga, foto=:foto WHERE pkid=:pkid";
 
             $stmt = $db->prepare($sql);
 
@@ -66,6 +73,7 @@
                 ':kategori' => $kategori,
                 ':namapk' => $nama_produk,
                 ':harga' => $harga,
+                'foto' =>$nama_foto,
                 ':pkid' => $id_produk
             );
 
@@ -298,6 +306,13 @@
                                         <div class="col-md-12">
                                             <input type="number" name="harga"
                                                 class="form-control form-control-line" value=<?php echo $result['harga']; ?> required autofocus>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Foto</label>
+                                        <div class="col-md-12">
+                                            <input type="file"
+                                                class="form-control form-control-line" name="foto" accept=".png, .jpg, .jpeg" required autofocus>
                                         </div>
                                     </div>
                                     <div class="form-group">
