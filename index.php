@@ -42,7 +42,16 @@
     $rating_user2->execute();
 
     $hasil_rating_user2 = $rating_user2->fetchAll(PDO::FETCH_ASSOC);
-        
+    
+    //ambil rating rata-rata dari produk yang direkomendasikan untuk user
+    $ambil_rata2_rating = "SELECT produk_kulit.*, avg(rating.ratingvalue)'rating_real' from rating inner join produk_kulit on rating.pkid=produk_kulit.pkid inner join user on rating.userid=user.userid group by produk_kulit.pkid";
+
+    $rata2_rating = $db->prepare($ambil_rata2_rating);
+
+    $rata2_rating->execute();
+
+    $hasil_rata2_rating = $rata2_rating->fetchAll(PDO::FETCH_CLASS);
+
     $array_terfilter = array();
     
     if($hasil_rating_user){
@@ -55,6 +64,31 @@
             }
         }
     }
+
+    //memasukan nilai rating rata-rata produk ke array array_terfilter untuk bahan perhitungan MAE
+    foreach(array_keys($array_terfilter) as $keys7){
+        foreach(array_keys($hasil_rata2_rating) as $key7){
+            if($array_terfilter[$keys7]['namapk'] === $hasil_rata2_rating[$key7]->namapk){
+                $array_terfilter[$keys7]['rating_real'] = $hasil_rata2_rating[$key7]->rating_real;
+            }
+            else{
+                $array_terfilter[$keys7]['rating_real'] = 0;
+            }
+        }
+    }
+
+    //mulai perhitungan MAE pada array terfilter
+    $sums = 0;
+
+    foreach($array_terfilter as $keys8 => $values8){
+        foreach($values8 as $key8 => $value8){
+            $sums += abs($values8['nilai_prediksi'] - $values8['rating_real']);
+        }
+    }
+
+    $MAE = $sums / count($array_terfilter);
+
+    echo $MAE;
 ?>
 <!DOCTYPE html>
 <html>
@@ -115,7 +149,8 @@
                 if($hasil_rating_user){
             ?>
             <div class="mx-auto mt-3 mb-5">
-            <h4 class="my-5 text-center">Produk yang direkomendasi untuk anda</h4>
+            <h4 class="text-center">Produk yang direkomendasi untuk anda</h4>
+            <p class="text-center fw-bolder">MAE : <?php echo $MAE; ?></p>
             <div class="row justify-content-start w-100 min-vh-100">
                 <?php
                     foreach(array_slice($array_terfilter,0,5) as $keys => $values){
