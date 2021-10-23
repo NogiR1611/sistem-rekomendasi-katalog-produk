@@ -1,6 +1,6 @@
 <?php
     function normalisasi_data($arr, $start, $length){
-
+ 
         //array hasil skenario akan dipotong - potong berdasarkan nama user
         $potongArr = array_slice($arr, $start, $length);
 

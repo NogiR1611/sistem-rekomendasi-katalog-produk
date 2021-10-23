@@ -77,7 +77,7 @@
         }
     }
 
-    //mulai perhitungan MAE pada array terfilter
+    //mulai perhitungan MAE pada array_terfilter
     $sums = 0;
 
     foreach($array_terfilter as $keys8 => $values8){
@@ -87,8 +87,6 @@
     }
 
     $MAE = $sums / count($array_terfilter);
-
-    echo $MAE;
 ?>
 <!DOCTYPE html>
 <html>
@@ -162,7 +160,8 @@
                                         <div class="p-3">
                                             <p class="text-dark fs-3 text-break fw-bold whitespace-nowrap overflow-hidden text-ellipsis mb-0">'.$values['namapk'].'</p>
                                             <p class="text-dark fs-6 mb-0">'.rupiah($values['harga']).'</p>
-                                            <p class="text-dark fs-6 mb-0">Nilai Prediksi : '.$values['nilai_prediksi'].'</p>    
+                                            <p class="text-dark fs-6 mb-0">Nilai Prediksi : '.$values['nilai_prediksi'].'</p>
+                                            <p class="text-dark fs-6 mb-0">Rating : '.$values['rating_real'].'</p>    
                                         </div>        
                                         <p class="text-center text-dark mt-3 fs-6">Lihat Produk</p> 
                                     </a>    

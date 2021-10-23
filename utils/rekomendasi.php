@@ -32,6 +32,8 @@
     //1. proses normalisasi data pada skenario rating
     $x = 0;
     $array_normalisasi_data = array();
+    
+    //print_r($hasil_skenario_rating);
 
     //lakukan pengulangan pada data hasil_skenario_rating untuk menormalisasi data dengan fungsi normalisasi_data dari helper.php
     //kemudian hasil normalisasi akan ditampung di variabel array_normalisasi_data
@@ -42,11 +44,12 @@
         }
     }
     
-    //membuat array untuk produk yang belum terisi rating oleh user dengan fungsi _group_by() dari helper.php dan hanya mengambil key '$_SESSION['nama']'
+    //membuat array untuk produk yang belum terisi rating oleh user dengan fungsi _group_by() dari helper.php dengan mengambil key '$_SESSION['nama']'
     //kemudian data akan ditampung ke variabel produk_rating_kosong
     $nama_pengguna = _group_by($array_normalisasi_data, 'nama')[$_SESSION['nama']];
     $list_produk_similarity = _group_by($array_normalisasi_data,'namapk');
 
+    //print_r($nama_pengguna);
 
     for($j=0; $j<count($nama_pengguna); $j++){
         if(!$nama_pengguna[$j]['ratingvalue']){
@@ -121,7 +124,7 @@
             $jumlah_similarity_rating += $value5 * $rating;        
             $jumlah_similarity += $value5;
 
-            if($jumlah_similarity >0){
+            if($jumlah_similarity > 0){
                 $weight_sum_per_produk = ($jumlah_similarity_rating / $jumlah_similarity);
             }
         }
