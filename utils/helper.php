@@ -45,7 +45,7 @@
         return $return;
     }
     
-    function similarity($a,$b){
+    function similarity($a, $b){
         $ratingA = is_string($a['ratingvalue']) ? floatval(trim($a['ratingvalue'])) : null;
         $ratingB = is_string($b['ratingvalue']) ? floatval(trim($b['ratingvalue'])) : null;
         
@@ -62,7 +62,7 @@
         return sqrt($total);
     }
 
-    function cari_nilai_rating($v,$rating_pengguna){
+    function cari_nilai_rating($v, $rating_pengguna){
         foreach($rating_pengguna as $keys6){
             if($keys6['namapk'] === $v){
                 return $keys6['ratingvalue'];

@@ -65,25 +65,28 @@
         }
     }
 
+    //print_r($hasil_rata2_rating);
+    //print_r($array_terfilter);
+
     //memasukan nilai rating rata-rata produk ke array array_terfilter untuk bahan perhitungan MAE
     foreach(array_keys($array_terfilter) as $keys7){
         foreach(array_keys($hasil_rata2_rating) as $key7){
             if($array_terfilter[$keys7]['namapk'] === $hasil_rata2_rating[$key7]->namapk){
                 $array_terfilter[$keys7]['rating_real'] = $hasil_rata2_rating[$key7]->rating_real;
             }
-            else{
-                $array_terfilter[$keys7]['rating_real'] = 0;
-            }
+            // else{
+            //     $array_terfilter[$keys7]['stopping'] = $key7;
+            //     $array_terfilter[$keys7]['rating_real'] = 0;
+            // }
         }
     }
 
+    //print_r($array_terfilter);
     //mulai perhitungan MAE pada array_terfilter
     $sums = 0;
 
     foreach($array_terfilter as $keys8 => $values8){
-        foreach($values8 as $key8 => $value8){
-            $sums += abs($values8['nilai_prediksi'] - $values8['rating_real']);
-        }
+        $sums += abs($values8['nilai_prediksi'] - $values8['rating_real']);
     }
 
     $MAE = $sums / count($array_terfilter);

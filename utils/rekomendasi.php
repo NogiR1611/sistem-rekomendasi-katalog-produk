@@ -33,7 +33,7 @@
     $x = 0;
     $array_normalisasi_data = array();
     
-    //print_r($hasil_skenario_rating);
+    //print_r(_group_by($hasil_skenario_rating, 'nama')['username5']);
 
     //lakukan pengulangan pada data hasil_skenario_rating untuk menormalisasi data dengan fungsi normalisasi_data dari helper.php
     //kemudian hasil normalisasi akan ditampung di variabel array_normalisasi_data
@@ -44,6 +44,7 @@
         }
     }
     
+    //print_r($array_normalisasi_data);
     //membuat array untuk produk yang belum terisi rating oleh user dengan fungsi _group_by() dari helper.php dengan mengambil key '$_SESSION['nama']'
     //kemudian data akan ditampung ke variabel produk_rating_kosong
     $nama_pengguna = _group_by($array_normalisasi_data, 'nama')[$_SESSION['nama']];
@@ -57,6 +58,8 @@
         }
     }
     
+    //print_r($produk_rating_kosong);
+
     //2. proses penentuan pasangan similarity antara produk belum terisi rating dengan semua produk
     $urutan_produk_similarity = array();
     $list_produk = array_keys($list_produk_similarity);
@@ -75,6 +78,16 @@
         }
     }
 
+    // $a = _group_by($array_normalisasi_data,'namapk')['Sampel Hand bag 1'];
+    // $b = _group_by($array_normalisasi_data,'namapk')['Sampel Dompet 1'];
+
+    // $c = array_map('similarity',$a,$b);
+    // $d = array_sum($c);
+
+    // $e = jumlah_kuadrat_bilangan($a);
+    // $f = jumlah_kuadrat_bilangan($b);
+     
+
     //lakukan perhitungan similarity(x,y) antara produk belum terisi rating dengan semua produk
     foreach($urutan_produk_similarity as $key3 => $values3){
         foreach($values3 as $item){
@@ -86,13 +99,16 @@
             $jumlah_antar_produk = array_sum($perkalian_antar_produk);
             $akar_produk_x = jumlah_kuadrat_bilangan($x);
             $akar_produk_y = jumlah_kuadrat_bilangan($y);
-            if($akar_produk_x * $akar_produk_y > 0){
-                $total_similarity = ($jumlah_antar_produk / $akar_produk_x * $akar_produk_y);
+            $perkalian_akar_x_y = $akar_produk_x * $akar_produk_y;
+            if($perkalian_akar_x_y > 0){
+                $total_similarity = ($jumlah_antar_produk / $perkalian_akar_x_y);
             }
 
             $kumpulan_similarity[$key3][$item] = number_format($total_similarity, 2, '.', '');
         }
-    }   
+    } 
+    
+    //print_r($kumpulan_similarity);
         
     //3. perhitungan prediksi dengan menggunakan metode weight sum
     foreach($kumpulan_similarity as $keys4 => &$values4){
@@ -104,12 +120,14 @@
             arsort($values4);
         }
             
-        $array_tertinggi = array_slice($values4,0,2);
+        $array_tertinggi = array_slice($values4, 0, 2);
         $kumpulan_similarity[$keys4] = $array_tertinggi;
     }
-    
-    $rating_pengguna = _group_by($hasil_skenario_rating,'nama')[$_SESSION['nama']];
+
+    $rating_pengguna = _group_by($hasil_skenario_rating, 'nama')[$_SESSION['nama']];
     $weight_sum = array();
+
+    //print_r($rating_pengguna);
 
     //proses perhitungan antara nilai similarity(S) dengan rating item(R) pada tiap produk
     foreach($kumpulan_similarity as $keys5 => $values5){
@@ -129,8 +147,10 @@
             }
         }
 
-        $weight_sum[$keys5] = number_format($weight_sum_per_produk,2,'.','');
+        $weight_sum[$keys5] = number_format($weight_sum_per_produk, 2, '.', '');
         
         arsort($weight_sum);
     }
+
+    //print_r($weight_sum);
 ?>
