@@ -279,11 +279,6 @@
                                                                 class="btn d-inline-block w-auto btn-success text-white no-block d-flex align-items-center mx-1">
                                                                 <i class="mdi mdi-table-edit"></i> <span class="hide-menu m-l-5">Edit</span>
                                                             </a>
-                                                            <a href="?delete='.$row['pkid'].'"
-                                                                onclick="return confirm(`Apakah anda yakin ingin menghapus produk ini?`)"
-                                                                class="btn d-inline-block w-auto btn-danger text-white no-block d-flex align-items-center mx-1">
-                                                                <i class="mdi mdi-delete"></i> <span class="hide-menu m-l-5">Hapus</span>
-                                                            </a>
                                                         </td>
                                                     </tr>
                                                     ';
